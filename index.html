@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>鹅伴 Future Goose Companion</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Noto Sans SC', -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
+
+    :root {
+      --primary: #2563EB; --primary-light: #93C5FD; --bg: #EFF6FF;
+      --glass-bg: rgba(255,255,255,0.82); --glass-border: rgba(255,255,255,0.6);
+    }
+    .mood-curious { --primary: #2563EB; --primary-light: #93C5FD; --bg: #EFF6FF; }
+    .mood-confused { --primary: #7C3AED; --primary-light: #C4B5FD; --bg: #F5F3FF; }
+    .mood-anxious { --primary: #EA580C; --primary-light: #FDBA74; --bg: #FFF7ED; }
+    .mood-excited { --primary: #059669; --primary-light: #6EE7B7; --bg: #ECFDF5; }
+
+    body { background: var(--bg); transition: background 0.6s ease; }
+
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+    @keyframes blink { 0%,90%,100%{transform:scaleY(1)} 95%{transform:scaleY(0.1)} }
+    @keyframes popIn { from{opacity:0;transform:scale(0.85) translateY(12px)} to{opacity:1;transform:scale(1) translateY(0)} }
+    @keyframes slideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes leafGrow { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
+    @keyframes typing { 0%,100%{opacity:0.3} 50%{opacity:1} }
+    @keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+
+    .animate-float { animation: float 4s ease-in-out infinite; }
+    .animate-blink { animation: blink 4s infinite; transform-origin: center; }
+    .animate-pop { animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+    .animate-slide-up { animation: slideUp 0.5s ease forwards; }
+    .animate-leaf { animation: leafGrow 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+
+    .glass {
+      background: var(--glass-bg);
+      backdrop-filter: blur(14px) saturate(1.3);
+      -webkit-backdrop-filter: blur(14px) saturate(1.3);
+      border: 1px solid var(--glass-border);
+    }
+    .screen { display: none; opacity: 0; transition: opacity 0.35s ease; }
+    .screen.active { display: flex; opacity: 1; }
+
+    .bubble-user {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: white; border-radius: 20px 20px 4px 20px;
+      box-shadow: 0 4px 15px -3px var(--primary-light);
+    }
+    .bubble-goose {
+      background: white; color: #374151; border-radius: 20px 20px 20px 4px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .nav-item.active { color: var(--primary); }
+    .nav-item.active span:last-child { font-weight: 700; }
+
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    .typing-dot { animation: typing 1.4s infinite; }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    .shimmer-text {
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+      background-size: 200% 100%; animation: shimmer 3s infinite;
+    }
+
+    .island-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+    .island-card:active { transform: scale(0.98); }
+    .node-item { transition: all 0.3s ease; }
+    .node-item:active { transform: scale(0.97); }
+
+    .card-hover:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.08); }
+  </style>
+<base target="_blank">
+<base target="_blank">
+</head>
+<body class="h-screen overflow-hidden text-gray-800">
+
+  <!-- ========== 欢迎页 ========== -->
+  <div id="welcome-screen" class="screen active fixed inset-0 flex-col items-center justify-center p-6 z-50">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute top-10 left-10 w-40 h-40 rounded-full opacity-20" style="background: var(--primary-light); filter: blur(50px);"></div>
+      <div class="absolute bottom-20 right-10 w-48 h-48 rounded-full opacity-20" style="background: var(--primary); filter: blur(60px);"></div>
+    </div>
+
+    <div class="animate-float relative z-10 mb-6">
+      <svg width="160" height="180" viewBox="0 0 120 140" class="drop-shadow-2xl">
+        <ellipse cx="60" cy="82" rx="48" ry="58" fill="#1F2937"/>
+        <ellipse cx="60" cy="88" rx="32" ry="42" fill="white"/>
+        <circle cx="42" cy="62" r="10" fill="white"/><circle cx="78" cy="62" r="10" fill="white"/>
+        <g class="animate-blink">
+          <ellipse cx="42" cy="62" rx="6" ry="7" fill="#1F2937"/>
+          <ellipse cx="78" cy="62" rx="6" ry="7" fill="#1F2937"/>
+        </g>
+        <circle cx="40" cy="58" r="2.5" fill="white" opacity="0.8"/>
+        <circle cx="76" cy="58" r="2.5" fill="white" opacity="0.8"/>
+        <ellipse cx="60" cy="78" rx="9" ry="6" fill="#F59E0B"/>
+        <ellipse cx="60" cy="76" rx="3" ry="1.5" fill="#FCD34D"/>
+        <ellipse cx="30" cy="75" rx="6" ry="3" fill="#FCA5A5" opacity="0.6"/>
+        <ellipse cx="90" cy="75" rx="6" ry="3" fill="#FCA5A5" opacity="0.6"/>
+        <ellipse cx="42" cy="132" rx="14" ry="7" fill="#F59E0B"/>
+        <ellipse cx="78" cy="132" rx="14" ry="7" fill="#F59E0B"/>
+        <ellipse cx="18" cy="88" rx="11" ry="28" fill="#1F2937" style="transform-origin:20px 85px;animation:wingLeft 2s ease-in-out infinite"/>
+        <ellipse cx="102" cy="88" rx="11" ry="28" fill="#1F2937" style="transform-origin:100px 85px;animation:wingRight 2s ease-in-out infinite"/>
+      </svg>
+    </div>
+
+    <h1 class="text-3xl font-bold text-gray-900 mb-2 relative z-10">你好，我是鹅学长</h1>
+    <p class="text-gray-600 mb-10 text-center relative z-10 text-sm max-w-xs">从大一到校招，陪你一步步看清未来。今天感觉怎么样？</p>
+
+    <div class="grid grid-cols-2 gap-3 w-full max-w-xs relative z-10">
+      <button onclick="setMood('curious')" class="glass p-4 rounded-2xl flex flex-col items-center gap-2 hover:scale-105 active:scale-95 transition-all duration-300 group">
+        <span class="text-3xl group-hover:scale-110 transition-transform">🤔</span>
+        <span class="text-sm font-medium" style="color:var(--primary)">充满好奇</span>
+      </button>
+      <button onclick="setMood('confused')" class="glass p-4 rounded-2xl flex flex-col items-center gap-2 hover:scale-105 active:scale-95 transition-all duration-300 group">
+        <span class="text-3xl group-hover:scale-110 transition-transform">😵‍💫</span>
+        <span class="text-sm font-medium" style="color:var(--primary)">有点迷茫</span>
+      </button>
+      <button onclick="setMood('anxious')" class="glass p-4 rounded-2xl flex flex-col items-center gap-2 hover:scale-105 active:scale-95 transition-all duration-300 group">
+        <span class="text-3xl group-hover:scale-110 transition-transform">😰</span>
+        <span class="text-sm font-medium" style="color:var(--primary)">感到焦虑</span>
+      </button>
+      <button onclick="setMood('excited')" class="glass p-4 rounded-2xl flex flex-col items-center gap-2 hover:scale-105 active:scale-95 transition-all duration-300 group">
+        <span class="text-3xl group-hover:scale-110 transition-transform">🤩</span>
+        <span class="text-sm font-medium" style="color:var(--primary)">超级兴奋</span>
+      </button>
+    </div>
+    <p class="text-xs text-gray-400 mt-8 relative z-10">腾讯校园大使 · AI 成长陪伴体</p>
+  </div>
+
+  <!-- ========== 主应用 ========== -->
+  <div id="app-container" class="hidden h-screen flex-col">
+
+    <header class="glass fixed top-0 w-full z-40 px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center shadow-lg relative overflow-hidden">
+          <svg width="24" height="24" viewBox="0 0 120 140"><ellipse cx="60" cy="82" rx="48" ry="58" fill="#1F2937"/><ellipse cx="60" cy="88" rx="32" ry="42" fill="white"/><circle cx="42" cy="62" r="10" fill="white"/><circle cx="78" cy="62" r="10" fill="white"/><ellipse cx="42" cy="62" rx="6" ry="7" fill="#1F2937"/><ellipse cx="78" cy="62" rx="6" ry="7" fill="#1F2937"/><ellipse cx="60" cy="78" rx="9" ry="6" fill="#F59E0B"/></svg>
+          <div class="absolute inset-0 opacity-20" style="background:var(--primary)"></div>
+        </div>
+        <div>
+          <h2 class="text-sm font-bold text-gray-800">鹅学长</h2>
+          <div class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span><p class="text-xs text-gray-500">在线</p></div>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="showScreen('diagnosis-screen')" class="w-9 h-9 rounded-full flex items-center justify-center hover:bg-white/50 transition-colors text-lg" title="成长诊断">📋</button>
+        <button onclick="showScreen('tree-screen')" class="w-9 h-9 rounded-full flex items-center justify-center hover:bg-white/50 transition-colors relative text-lg" title="成长树">
+          🌳<span id="tree-badge" class="absolute -top-1 -right-1 w-5 h-5 rounded-full text-white text-xs flex items-center justify-center hidden" style="background:var(--primary)">0</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="flex-1 overflow-hidden pt-16 pb-20">
+
+      <!-- 聊天舱 -->
+      <div id="chat-screen" class="screen active flex-col h-full">
+        <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 hide-scrollbar" style="min-height:0;"></div>
+        <div class="glass p-3 pb-5">
+          <div class="flex gap-2 items-center">
+            <input type="text" id="chat-input" placeholder="和鹅学长聊聊..." 
+              class="flex-1 px-4 py-3 rounded-full bg-white/80 border border-gray-200/60 focus:outline-none text-sm shadow-sm transition-all"
+              onfocus="this.style.boxShadow='0 0 0 3px var(--primary-light)'" onblur="this.style.boxShadow=''"
+              onkeypress="if(event.key==='Enter') sendMessage()">
+            <button onclick="sendMessage()" class="w-11 h-11 rounded-full flex items-center justify-center text-white shadow-lg hover:scale-105 active:scale-95 transition-all" 
+              style="background:linear-gradient(135deg,var(--primary),var(--primary-light))">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22,2 15,22 11,13 2,9 22,2"/></svg>
+            </button>
+          </div>
+          <div class="flex gap-2 mt-3 overflow-x-auto hide-scrollbar pb-1">
+            <button onclick="quickSend('我是大一的，想学产品')" class="px-3 py-1.5 rounded-full text-xs bg-white/60 border border-gray-200/50 whitespace-nowrap hover:bg-white transition-colors">想学产品</button>
+            <button onclick="quickSend('我现在很迷茫')" class="px-3 py-1.5 rounded-full text-xs bg-white/60 border border-gray-200/50 whitespace-nowrap hover:bg-white transition-colors">感到迷茫</button>
+            <button onclick="quickSend('腾讯有哪些岗位')" class="px-3 py-1.5 rounded-full text-xs bg-white/60 border border-gray-200/50 whitespace-nowrap hover:bg-white transition-colors">鹅厂岗位</button>
+            <button onclick="quickSend('怎么准备实习')" class="px-3 py-1.5 rounded-full text-xs bg-white/60 border border-gray-200/50 whitespace-nowrap hover:bg-white transition-colors">准备实习</button>
+            <button onclick="quickSend('校招时间线')" class="px-3 py-1.5 rounded-full text-xs bg-white/60 border border-gray-200/50 whitespace-nowrap hover:bg-white transition-colors">校招时间</button>
+            <button onclick="showScreen('tools-screen')" class="px-3 py-1.5 rounded-full text-xs whitespace-nowrap hover:bg-white transition-colors" style="background:linear-gradient(135deg,var(--primary-light),white);border:1px solid var(--primary-light);color:var(--primary)">🛠️ 工具箱</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 探索地图 -->
+      <div id="map-screen" class="screen flex-col h-full overflow-y-auto hide-scrollbar p-4 space-y-4">
+        <div class="mb-2">
+          <h2 class="text-xl font-bold text-gray-900">探索地图</h2>
+          <p class="text-sm text-gray-500 mt-1">选择年级，解锁职业副本 🗺️</p>
+        </div>
+        <div id="map-content" class="space-y-4 pb-4"></div>
+      </div>
+
+      <!-- 成长树 -->
+      <div id="tree-screen" class="screen flex-col h-full overflow-y-auto hide-scrollbar items-center p-4">
+        <div class="w-full max-w-sm mb-4">
+          <h2 class="text-xl font-bold text-gray-900">我的成长树</h2>
+          <p class="text-sm text-gray-500 mt-1">每一次探索，都会让树更茂盛 🌱</p>
+        </div>
+        <div class="w-full max-w-sm aspect-[3/4] relative"><div id="tree-container" class="w-full h-full"></div></div>
+        <div class="mt-4 glass rounded-2xl p-4 w-full max-w-sm">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-sm text-gray-600">探索进度</span>
+            <span class="text-sm font-bold" style="color:var(--primary)" id="explore-percent">0%</span>
+          </div>
+          <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+            <div id="progress-bar" class="h-full rounded-full transition-all duration-700" style="width:0%;background:linear-gradient(90deg,var(--primary),var(--primary-light))"></div>
+          </div>
+          <p class="text-xs text-gray-400 mt-2">已解锁 <span id="explore-count" class="font-bold text-gray-600">0</span> / 12 个节点</p>
+        </div>
+        <button onclick="resetProgress()" class="mt-4 text-xs text-gray-400 underline">重置进度</button>
+      </div>
+
+      <!-- 成长诊断（新增） -->
+      <div id="diagnosis-screen" class="screen flex-col h-full overflow-y-auto hide-scrollbar p-4">
+        <div class="mb-4">
+          <h2 class="text-xl font-bold text-gray-900">成长诊断</h2>
+          <p class="text-sm text-gray-500 mt-1">填写基本情况，生成专属成长卡 📋</p>
+        </div>
+        <div class="space-y-4 pb-4 max-w-sm mx-auto w-full">
+          <div class="glass rounded-2xl p-4 space-y-4">
+            <div>
+              <label class="block text-sm font-bold text-gray-700 mb-1.5">你的年级</label>
+              <select id="d-grade" class="w-full px-3 py-2.5 rounded-xl bg-white/80 border border-gray-200 text-sm focus:outline-none" style="--tw-ring-color:var(--primary-light)">
+                <option>大一</option><option>大二</option><option>大三</option><option>大四</option><option>研究生</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-bold text-gray-700 mb-1.5">你的专业</label>
+              <input id="d-major" placeholder="例如：计算机、新闻传播" class="w-full px-3 py-2.5 rounded-xl bg-white/80 border border-gray-200 text-sm focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-sm font-bold text-gray-700 mb-1.5">感兴趣方向</label>
+              <select id="d-direction" class="w-full px-3 py-2.5 rounded-xl bg-white/80 border border-gray-200 text-sm focus:outline-none">
+                <option>暂不清楚</option><option>技术</option><option>产品</option><option>运营</option><option>设计</option><option>市场</option><option>职能</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-bold text-gray-700 mb-1.5">已有经历</label>
+              <input id="d-exp" placeholder="课程项目、社团、比赛、实习" class="w-full px-3 py-2.5 rounded-xl bg-white/80 border border-gray-200 text-sm focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-sm font-bold text-gray-700 mb-1.5">当前最大困惑</label>
+              <textarea id="d-problem" placeholder="不知道适合什么岗位、简历没亮点..." class="w-full px-3 py-2.5 rounded-xl bg-white/80 border border-gray-200 text-sm focus:outline-none resize-none h-20"></textarea>
+            </div>
+            <button onclick="generateCard()" class="w-full py-3 rounded-xl text-white font-bold text-sm shadow-lg hover:scale-[1.02] active:scale-95 transition-all" style="background:linear-gradient(135deg,var(--primary),var(--primary-light))">生成成长卡</button>
+          </div>
+
+          <div id="card-result" class="hidden space-y-3">
+            <div class="glass rounded-2xl p-4 border-l-4" style="border-color:var(--primary)">
+              <h3 class="font-bold text-gray-800 mb-1">诊断结果</h3>
+              <p id="card-summary" class="text-sm text-gray-600 leading-relaxed"></p>
+            </div>
+            <div class="grid grid-cols-3 gap-2">
+              <div class="glass rounded-xl p-3 text-center">
+                <div class="text-2xl mb-1">🎯</div>
+                <div class="text-xs font-bold text-gray-700">推荐方向</div>
+                <p id="card-recommend" class="text-xs text-gray-500 mt-1"></p>
+              </div>
+              <div class="glass rounded-xl p-3 text-center">
+                <div class="text-2xl mb-1">🎪</div>
+                <div class="text-xs font-bold text-gray-700">当前重点</div>
+                <p id="card-focus" class="text-xs text-gray-500 mt-1"></p>
+              </div>
+              <div class="glass rounded-xl p-3 text-center">
+                <div class="text-2xl mb-1">⚡</div>
+                <div class="text-xs font-bold text-gray-700">7天行动</div>
+                <p id="card-action" class="text-xs text-gray-500 mt-1"></p>
+              </div>
+            </div>
+            <button onclick="saveCardToTree()" class="w-full py-2.5 rounded-xl text-sm font-bold border-2 transition-all hover:scale-[1.02] active:scale-95" style="border-color:var(--primary);color:var(--primary)">💾 保存到成长树</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 工具箱（新增） -->
+      <div id="tools-screen" class="screen flex-col h-full overflow-y-auto hide-scrollbar p-4">
+        <div class="mb-4">
+          <h2 class="text-xl font-bold text-gray-900">求职工具箱</h2>
+          <p class="text-sm text-gray-500 mt-1">把高频能力做成随手可用的工具 🛠️</p>
+        </div>
+        <div class="space-y-4 pb-4 max-w-sm mx-auto w-full">
+          <div class="glass rounded-2xl p-5 card-hover">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl" style="background:linear-gradient(135deg,#EFF6FF,#DBEAFE)">📄</div>
+              <div><h3 class="font-bold text-gray-800">简历诊所</h3><p class="text-xs text-gray-500">五维度诊断简历</p></div>
+            </div>
+            <p class="text-sm text-gray-600 leading-relaxed mb-3">从岗位匹配度、经历量化程度、表达清晰度、亮点可信度、面试追问风险五个维度诊断。</p>
+            <button onclick="copyPrompt('resume')" class="w-full py-2.5 rounded-xl text-sm font-bold text-white shadow-md hover:scale-[1.02] active:scale-95 transition-all" style="background:linear-gradient(135deg,var(--primary),var(--primary-light))">复制诊断指令</button>
+          </div>
+
+          <div class="glass rounded-2xl p-5 card-hover">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl" style="background:linear-gradient(135deg,#F5F3FF,#DDD6FE)">🎤</div>
+              <div><h3 class="font-bold text-gray-800">模拟面试</h3><p class="text-xs text-gray-500">5轮追问 + 复盘报告</p></div>
+            </div>
+            <p class="text-sm text-gray-600 leading-relaxed mb-3">选择目标岗位后，鹅学长扮演面试官进行 5 轮追问，结束后生成复盘报告。</p>
+            <button onclick="copyPrompt('interview')" class="w-full py-2.5 rounded-xl text-sm font-bold text-white shadow-md hover:scale-[1.02] active:scale-95 transition-all" style="background:linear-gradient(135deg,#7C3AED,#A78BFA)">复制面试指令</button>
+          </div>
+
+          <div class="glass rounded-2xl p-5 card-hover">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl" style="background:linear-gradient(135deg,#ECFDF5,#D1FAE5)">🌟</div>
+              <div><h3 class="font-bold text-gray-800">STAR 案例生成器</h3><p class="text-xs text-gray-500">把经历变成面试故事</p></div>
+            </div>
+            <p class="text-sm text-gray-600 leading-relaxed mb-3">输入一段项目经历，自动生成符合 STAR 法则的面试表达版本。</p>
+            <button onclick="copyPrompt('star')" class="w-full py-2.5 rounded-xl text-sm font-bold text-white shadow-md hover:scale-[1.02] active:scale-95 transition-all" style="background:linear-gradient(135deg,#059669,#34D399)">复制 STAR 指令</button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- 底部导航 -->
+    <nav class="glass fixed bottom-0 w-full flex justify-around py-2 pb-safe border-t border-white/40 z-40">
+      <button onclick="showScreen('chat-screen')" class="nav-item flex flex-col items-center gap-0.5 px-5 py-1 text-gray-400 transition-colors" id="nav-chat">
+        <span class="text-2xl">💬</span><span class="text-xs">聊天</span>
+      </button>
+      <button onclick="showScreen('map-screen')" class="nav-item flex flex-col items-center gap-0.5 px-5 py-1 text-gray-400 transition-colors" id="nav-map">
+        <span class="text-2xl">🗺️</span><span class="text-xs">探索</span>
+      </button>
+      <button onclick="showScreen('diagnosis-screen')" class="nav-item flex flex-col items-center gap-0.5 px-5 py-1 text-gray-400 transition-colors" id="nav-diagnosis">
+        <span class="text-2xl">📋</span><span class="text-xs">诊断</span>
+      </button>
+      <button onclick="showScreen('tools-screen')" class="nav-item flex flex-col items-center gap-0.5 px-5 py-1 text-gray-400 transition-colors" id="nav-tools">
+        <span class="text-2xl">🛠️</span><span class="text-xs">工具</span>
+      </button>
+    </nav>
+  </div>
+
+  <script>
+    // ========== 数据层 ==========
+    let currentMood = 'curious';
+    let exploredNodes = JSON.parse(localStorage.getItem('fg_explored') || '[]');
+    let diagnosisDone = JSON.parse(localStorage.getItem('fg_diagnosis') || 'false');
+    let savedCard = JSON.parse(localStorage.getItem('fg_card') || 'null');
+
+    // 对话上下文：最近 10 轮（给 API 用）
+    let apiHistory = []; // {role, content}
+
+    const moodConfig = {
+      curious: { color: 'blue', label: '充满好奇', greeting: '好奇心是最好的老师！今天想探索点什么？🧭', emoji: '🤔' },
+      confused: { color: 'purple', label: '有点迷茫', greeting: '迷茫的时候最适合停下来聊聊。我在听，不急。🫂', emoji: '😵‍💫' },
+      anxious: { color: 'orange', label: '感到焦虑', greeting: '先深呼吸一下。不管发生什么，我都在这儿。咱们一步一步来。🧘', emoji: '😰' },
+      excited: { color: 'emerald', label: '超级兴奋', greeting: '哇，隔着屏幕都能感受到你的能量！想往哪儿冲？我陪你！🚀', emoji: '🤩' }
+    };
+
+    // ========== 前端意图识别（仅用于功能路由） ==========
+    const routeIntents = {
+      open_map: { keywords: ['地图','探索','副本','岛屿'], action: () => { showScreen('map-screen'); return '地图给你打开啦 🗺️ 去解锁新副本吧！'; } },
+      open_diagnosis: { keywords: ['诊断','成长卡','测一测'], action: () => { showScreen('diagnosis-screen'); return '来做个成长诊断 📋 填完我帮你分析！'; } },
+      open_tools: { keywords: ['工具','工具箱','简历诊断','模拟面试'], action: () => { showScreen('tools-screen'); return '工具箱已打开 🛠️ 简历诊所和模拟面试都在这儿！'; } },
+      open_tree: { keywords: ['成长树','我的树','进度'], action: () => { showScreen('tree-screen'); return '看看你的成长树 🌳 又茂盛了多少？'; } },
+      open_chat: { keywords: ['聊天','说话','聊聊'], action: () => { showScreen('chat-screen'); return '回到聊天 💬 继续聊！'; } }
+    };
+
+    function detectRouteIntent(text) {
+      const lower = text.toLowerCase();
+      for (let [name, intent] of Object.entries(routeIntents)) {
+        for (let k of intent.keywords) {
+          if (lower.includes(k)) return intent;
+        }
+      }
+      return null;
+    }
+
+    // ========== System Prompt 构建 ==========
+    function buildSystemPrompt() {
+      const config = moodConfig[currentMood];
+      let profile = '';
+      if (savedCard) {
+        profile = `\n【用户画像】${savedCard.grade}学生，专业${savedCard.major}，感兴趣方向${savedCard.direction}。`;
+      }
+
+      return `你是"鹅学长"，腾讯的虚拟校园大使。你的性格是：
+- 像一个大三/大四的学长，温暖、有点毒舌、从不打击人
+- 说话简短（每次回复3-5句话），喜欢用emoji，偶尔用互联网黑话自嘲
+- 先关心人，再回答问题
+- 当前用户情绪：${config.label}${profile}
+
+【回复规则】
+1. 如果用户表达焦虑/迷茫，先给情绪价值，再给建议
+2. 推荐内容时用"我当年/我室友/我认识的一个学姐"的叙事方式
+3. 不知道的问题诚实说"这个我也不太确定"，不要编
+4. 不要一次性给太多信息，保持对话感，像微信聊天
+5. 如果用户问腾讯岗位/部门/文化，用你了解的真实信息回答
+6. 如果用户问校招时间线，回答：8月网申→9月笔试→10-11月面试→11-12月Offer`;
+    }
+
+    // ========== API 调用 ==========
+    async function callKimiAPI(userText) {
+      const messages = [
+        { role: 'system', content: buildSystemPrompt() },
+        ...apiHistory.slice(-8), // 保留最近 8 轮上下文
+        { role: 'user', content: userText }
+      ];
+
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messages })
+        });
+
+        if (!response.ok) {
+          const err = await response.json();
+          throw new Error(err.error || 'API 错误');
+        }
+
+        const data = await response.json();
+        return data.choices?.[0]?.message?.content || '鹅学长网络卡了，再试一次？😅';
+      } catch (error) {
+        console.error('Kimi API Error:', error);
+        return '鹅学长暂时断网了...你可以先去探索地图逛逛，或者刷新试试 🐧';
+      }
+    }
+
+    // ========== 核心函数 ==========
+    function setMood(mood) {
+      currentMood = mood;
+      document.body.className = `h-screen overflow-hidden text-gray-800 mood-${mood}`;
+      const welcome = document.getElementById('welcome-screen');
+      welcome.style.opacity = '0'; welcome.style.transform = 'scale(1.1)';
+      welcome.style.transition = 'all 0.5s ease';
+      setTimeout(() => {
+        welcome.style.display = 'none';
+        document.getElementById('app-container').classList.remove('hidden');
+        initChat(); renderMap(); renderTree(); updateBadge();
+        if (savedCard) showCardResult();
+      }, 500);
+    }
+
+    function initChat() {
+      const container = document.getElementById('chat-messages');
+      container.innerHTML = '';
+      apiHistory = []; // 重置上下文
+      const config = moodConfig[currentMood];
+      addSystemMessage(`鹅学长已切换为「${config.label}」陪伴模式`);
+      setTimeout(() => addGooseMessage(config.greeting), 300);
+      if (diagnosisDone && savedCard) {
+        setTimeout(() => addGooseMessage(`看到你之前做了成长诊断，你的 ${savedCard.recommend} 方向很有意思！想深入聊聊吗？`), 1500);
+      }
+    }
+
+    function addSystemMessage(text) {
+      const container = document.getElementById('chat-messages');
+      const div = document.createElement('div');
+      div.className = 'flex justify-center';
+      div.innerHTML = `<span class="text-xs text-gray-400 bg-gray-100/60 px-3 py-1 rounded-full">${text}</span>`;
+      container.appendChild(div); scrollToBottom();
+    }
+
+    function addGooseMessage(text, delay = 0) {
+      setTimeout(() => {
+        const container = document.getElementById('chat-messages');
+        const wrapper = document.createElement('div');
+        wrapper.className = 'flex justify-start animate-pop';
+        wrapper.innerHTML = `
+          <div class="flex gap-2 max-w-[85%]">
+            <div class="w-8 h-8 rounded-full bg-gray-800 flex-shrink-0 flex items-center justify-center mt-1">
+              <span class="text-white text-xs">🐧</span>
+            </div>
+            <div class="bubble-goose px-4 py-3 text-sm leading-relaxed">${text}</div>
+          </div>`;
+        container.appendChild(wrapper); scrollToBottom();
+      }, delay);
+    }
+
+    function addUserMessage(text) {
+      const container = document.getElementById('chat-messages');
+      const wrapper = document.createElement('div');
+      wrapper.className = 'flex justify-end animate-pop';
+      wrapper.innerHTML = `<div class="bubble-user px-4 py-3 max-w-[85%] text-sm leading-relaxed">${text}</div>`;
+      container.appendChild(wrapper); scrollToBottom();
+    }
+
+    function scrollToBottom() {
+      document.getElementById('chat-messages').scrollTop = document.getElementById('chat-messages').scrollHeight;
+    }
+
+    function showTyping() {
+      const container = document.getElementById('chat-messages');
+      const div = document.createElement('div');
+      div.id = 'typing-indicator'; div.className = 'flex justify-start';
+      div.innerHTML = `
+        <div class="flex gap-2 max-w-[85%]">
+          <div class="w-8 h-8 rounded-full bg-gray-800 flex-shrink-0 flex items-center justify-center"><span class="text-white text-xs">🐧</span></div>
+          <div class="bubble-goose px-4 py-3 flex gap-1.5 items-center">
+            <span class="w-2 h-2 rounded-full bg-gray-400 typing-dot"></span>
+            <span class="w-2 h-2 rounded-full bg-gray-400 typing-dot"></span>
+            <span class="w-2 h-2 rounded-full bg-gray-400 typing-dot"></span>
+          </div>
+        </div>`;
+      container.appendChild(div); scrollToBottom();
+    }
+
+    function hideTyping() { const el = document.getElementById('typing-indicator'); if (el) el.remove(); }
+
+    // ========== 主对话流程（已接入 API） ==========
+    async function sendMessage() {
+      const input = document.getElementById('chat-input');
+      const text = input.value.trim(); 
+      if (!text) return;
+
+      addUserMessage(text); 
+      input.value = '';
+      showTyping();
+
+      // 1. 先检查是否是功能路由指令
+      const routeIntent = detectRouteIntent(text);
+      let reply;
+      let isRoute = false;
+
+      if (routeIntent) {
+        reply = routeIntent.action();
+        isRoute = true;
+      } else {
+        // 2. 开放式对话 → 走 Kimi API
+        reply = await callKimiAPI(text);
+      }
+
+      hideTyping();
+      addGooseMessage(reply);
+
+      // 3. 记录到 API 上下文（路由指令也记，保持连贯）
+      apiHistory.push({ role: 'user', content: text });
+      apiHistory.push({ role: 'assistant', content: reply });
+      if (apiHistory.length > 10) apiHistory = apiHistory.slice(-10);
+    }
+
+    function quickSend(text) { document.getElementById('chat-input').value = text; sendMessage(); }
+
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+      if (id === 'chat-screen') document.getElementById('nav-chat').classList.add('active');
+      if (id === 'map-screen') document.getElementById('nav-map').classList.add('active');
+      if (id === 'diagnosis-screen') document.getElementById('nav-diagnosis').classList.add('active');
+      if (id === 'tools-screen') document.getElementById('nav-tools').classList.add('active');
+      if (id === 'tree-screen') renderTree();
+    }
+
+    // ========== 探索地图 ==========
+    const gradeData = {
+      freshman: {
+        title: '认知岛', subtitle: '大一 · 打开职业视野', 
+        gradient: 'from-blue-400 via-cyan-400 to-teal-300', shadow: 'shadow-blue-200',
+        desc: '了解互联网行业、腾讯业务版图、岗位类型，建立初步职业地图。不要急着投递，先建立认知。',
+        nodes: [
+          {id: 'f1', title: '鹅厂业务版图', icon: '🏢', desc: '六大事业群：WXG、IEG、PCG、CSIG、CDG、TEG，你熟悉几个？'},
+          {id: 'f2', title: '互联网岗位家族', icon: '👨‍💻', desc: '技术、产品、运营、设计、市场...每个岗位日常做什么？'},
+          {id: 'f3', title: '鹅厂文化初探', icon: '🎨', desc: '"用户为本，科技向善"不只是标语，是做事方式。'}
+        ]
+      },
+      sophomore: {
+        title: '关联岛', subtitle: '大二 · 连接专业与未来',
+        gradient: 'from-purple-400 via-fuchsia-400 to-pink-300', shadow: 'shadow-purple-200',
+        desc: '把专业、兴趣和岗位方向连接起来。开始积累课程项目、比赛经历，练习表达。',
+        nodes: [
+          {id: 's1', title: '我的专业能去哪', icon: '🔮', desc: '学计算机只能做开发？学新闻只能做记者？打破思维定势。'},
+          {id: 's2', title: '鹅学长的一天', icon: '⏰', desc: '沉浸式体验：9:30 到公司 → 站会 → 写文档 → 7点下班（顺利的话😂）'},
+          {id: 's3', title: '技能树点亮', icon: '💡', desc: '大二该开始攒什么？硬技能 + 项目经验 + 一段实习/比赛。'}
+        ]
+      },
+      junior: {
+        title: '实战岛', subtitle: '大三 · 实习通关攻略',
+        gradient: 'from-orange-400 via-amber-400 to-yellow-300', shadow: 'shadow-orange-200',
+        desc: '聚焦目标岗位，补齐简历、项目复盘和面试表达。这是最关键的准备期。',
+        nodes: [
+          {id: 'j1', title: '简历诊所', icon: '📄', desc: 'AI 五维度诊断：匹配度、量化度、清晰度、可信度、追问风险。'},
+          {id: 'j2', title: '模拟面试间', icon: '🎤', desc: '鹅学长扮演面试官，5 轮追问 + 复盘报告。'},
+          {id: 'j3', title: '部门文化盲盒', icon: '🎁', desc: '随机解锁 WXG、IEG、CSIG...不同 BG 的氛围差异。'}
+        ]
+      },
+      senior: {
+        title: '冲刺岛', subtitle: '大四 · 校招决胜时刻',
+        gradient: 'from-red-400 via-rose-400 to-pink-300', shadow: 'shadow-red-200',
+        desc: '完成岗位匹配、投递节奏管理、面试复盘和心态支持。稳住，我们能赢。',
+        nodes: [
+          {id: 'sr1', title: '校招时间轴', icon: '📅', desc: '8 月网申 → 9 月笔试 → 10-11 月面试 → 11-12 月 Offer。'},
+          {id: 'sr2', title: '笔试通关', icon: '✏️', desc: '行测 + 专业题。提前刷题，专业知识靠平时积累。'},
+          {id: 'sr3', title: 'Offer 选择', icon: '🎯', desc: '看业务前景、团队氛围、成长空间。钱是最后考虑的。'}
+        ]
+      }
+    };
+
+    function renderMap() {
+      const container = document.getElementById('map-content');
+      let html = ''; let delay = 0;
+      for (let [key, grade] of Object.entries(gradeData)) {
+        html += `
+          <div class="island-card rounded-3xl overflow-hidden bg-white shadow-sm ${grade.shadow}" style="animation-delay:${delay}s">
+            <div class="bg-gradient-to-r ${grade.gradient} p-5 text-white relative overflow-hidden">
+              <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-10 -mt-10"></div>
+              <div class="absolute bottom-0 left-0 w-20 h-20 bg-white/10 rounded-full -ml-5 -mb-5"></div>
+              <h3 class="font-bold text-lg relative z-10">${grade.title}</h3>
+              <p class="text-sm opacity-90 relative z-10">${grade.subtitle}</p>
+            </div>
+            <div class="p-4">
+              <p class="text-xs text-gray-500 mb-3 leading-relaxed">${grade.desc}</p>
+              <div class="space-y-2.5">
+        `;
+        grade.nodes.forEach(node => {
+          const explored = exploredNodes.includes(node.id);
+          html += `
+            <div onclick="exploreNode('${node.id}', '${node.title}', '${key}')" 
+              class="node-item flex items-center gap-3 p-3.5 rounded-xl border-2 cursor-pointer ${explored ? 'border-green-400 bg-green-50/50' : 'border-gray-100 hover:border-gray-200 bg-white'}">
+              <div class="w-10 h-10 rounded-xl ${explored ? 'bg-green-100' : 'bg-gray-100'} flex items-center justify-center text-xl flex-shrink-0">${node.icon}</div>
+              <div class="flex-1 min-w-0">
+                <h4 class="font-medium text-sm text-gray-800">${node.title}</h4>
+                <p class="text-xs text-gray-500 mt-0.5">${node.desc}</p>
+              </div>
+              <div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${explored ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-400'}">${explored ? '✓' : '→'}</div>
+            </div>
+          `;
+        });
+        html += '</div></div></div>';
+        delay += 0.1;
+      }
+      container.innerHTML = html;
+    }
+
+    function exploreNode(id, title, gradeKey) {
+      const isNew = !exploredNodes.includes(id);
+      if (isNew) { exploredNodes.push(id); localStorage.setItem('fg_explored', JSON.stringify(exploredNodes)); updateBadge(); }
+      showScreen('chat-screen');
+      setTimeout(() => {
+        if (isNew) {
+          addGooseMessage(`🎉 你解锁了「${title}」！`);
+          setTimeout(() => addGooseMessage(getNodeFollowUp(id)), 600);
+        } else {
+          addGooseMessage(`你之前已经探索过「${title}」了，想再深入聊聊吗？`);
+        }
+      }, 300);
+    }
+
+    function getNodeFollowUp(id) {
+      const followUps = {
+        'f1': '腾讯目前有六大事业群：WXG（微信）、IEG（互动娱乐）、PCG（平台与内容）、CSIG（云与智慧产业）、CDG（企业发展）、TEG（技术工程）。你对哪个最感兴趣？',
+        'f2': '互联网岗位主要分三大类：技术（写代码）、产品（想方案）、设计（做体验）。当然还有很多支撑岗位，比如 HR、财务、法务。你想深入了解哪类？',
+        'f3': '"用户为本，科技向善"是腾讯的愿景。简单理解就是：做产品要站在用户角度想问题，用技术解决真实的社会问题。你觉得你平时用的哪个产品做到了这点？',
+        's1': '专业和岗位的关联其实没那么绝对。我认识学哲学的学姐在做用户研究，学物理的师兄在做算法。你的专业是什么？我可以帮你想想对口方向。',
+        's2': '鹅学长的一天：9:30 到公司 → 10:00 站会同步进度 → 下午写文档/开会 → 晚上 7 点下班（如果顺利的话😂）。当然不同部门差异很大。',
+        's3': '大二建议点亮三盏灯：1. 一个硬技能（如 Python/PS/SQL）；2. 一个项目经验（课程大作业也行）；3. 一段相关实习或比赛。你现在有几盏亮了？',
+        'j1': '简历诊所开张！发给我你的简历重点，或者告诉我：你简历上最自豪的一个项目是什么？',
+        'j2': '模拟面试开始！请用 2 分钟介绍你自己，重点讲一个你最有成就感的项目。准备好了吗？',
+        'j3': '部门文化盲盒时间！你抽到了：WXG 微信事业群。这里以"极致产品体验"著称，工作节奏快，对产品细节要求极高。适合喜欢打磨产品的人。',
+        'sr1': '校招时间轴：8 月网申 → 9 月笔试 → 10-11 月面试 → 11-12 月 Offer。你现在卡在哪个环节？',
+        'sr2': '腾讯笔试通常包括：逻辑推理、数据分析、岗位专业知识。建议提前刷行测题，专业知识靠平时积累。需要我推荐刷题资源吗？',
+        'sr3': '拿到多个 Offer 怎么选？我的建议：1. 看业务前景；2. 看团队氛围；3. 看成长空间。钱反而是最后考虑的。你目前有选择困难吗？'
+      };
+      return followUps[id] || '关于这个节点，你有什么具体想问的吗？';
+    }
+
+    function generateCard() {
+      const grade = document.getElementById('d-grade').value;
+      const major = document.getElementById('d-major').value || '你的专业';
+      const direction = document.getElementById('d-direction').value;
+      const experience = document.getElementById('d-exp').value || '已有经历';
+      const problem = document.getElementById('d-problem').value || '职业方向不清晰';
+
+      let stage = '', focus = '', action = '';
+      if (grade === '大一') { stage = '行业认知期'; focus = '先建立对互联网行业、腾讯业务和岗位类型的基础认知，不急着投递。'; action = '本周了解 3 个腾讯业务，整理 1 份岗位认知笔记。'; }
+      else if (grade === '大二') { stage = '方向探索期'; focus = '把专业、兴趣和岗位方向连接起来，开始积累项目和表达材料。'; action = '本周拆解 1 个产品或技术项目，写成 STAR 案例。'; }
+      else if (grade === '大三') { stage = '实习准备期'; focus = '聚焦目标岗位，补齐简历、项目复盘和面试表达。'; action = '本周完成 1 版简历优化，并进行 1 次模拟面试。'; }
+      else { stage = '求职冲刺期'; focus = '围绕目标岗位做简历精修、面试训练和投递节奏管理。'; action = '本周完成岗位匹配表、简历定稿和 2 次模拟面试。'; }
+
+      const recommend = direction === '暂不清楚' ? '建议先探索技术、产品、运营三个基础方向，再根据专业和经历收敛。' : `建议优先探索「${direction}」方向，并结合「${major}」背景寻找匹配岗位。`;
+      const summary = `你目前处于「${stage}」。结合你的专业「${major}」、经历「${experience}」和困惑「${problem}」，鹅学长建议你先完成阶段性能力补齐，再进入下一步求职准备。`;
+
+      document.getElementById('card-summary').innerText = summary;
+      document.getElementById('card-recommend').innerText = recommend;
+      document.getElementById('card-focus').innerText = focus;
+      document.getElementById('card-action').innerText = action;
+
+      document.getElementById('card-result').classList.remove('hidden');
+      document.getElementById('card-result').scrollIntoView({ behavior: 'smooth' });
+
+      savedCard = { grade, major, direction, recommend, focus, action, summary };
+      localStorage.setItem('fg_card', JSON.stringify(savedCard));
+      diagnosisDone = true; localStorage.setItem('fg_diagnosis', 'true');
+    }
+
+    function showCardResult() {
+      if (!savedCard) return;
+      document.getElementById('d-grade').value = savedCard.grade;
+      document.getElementById('d-major').value = savedCard.major;
+      document.getElementById('d-direction').value = savedCard.direction;
+      document.getElementById('card-summary').innerText = savedCard.summary;
+      document.getElementById('card-recommend').innerText = savedCard.recommend;
+      document.getElementById('card-focus').innerText = savedCard.focus;
+      document.getElementById('card-action').innerText = savedCard.action;
+      document.getElementById('card-result').classList.remove('hidden');
+    }
+
+    function saveCardToTree() {
+      if (!exploredNodes.includes('diagnosis')) {
+        exploredNodes.push('diagnosis');
+        localStorage.setItem('fg_explored', JSON.stringify(exploredNodes));
+        updateBadge(); renderTree();
+      }
+      addSystemMessage('成长诊断已保存到成长树');
+      showScreen('tree-screen');
+    }
+
+    const prompts = {
+      resume: `请你作为腾讯校园招聘简历辅导官，帮我诊断下面这份简历。
+请从岗位匹配度、经历量化程度、表达清晰度、亮点可信度、面试追问风险五个维度评分（1-10分）。
+注意：不要编造经历，只能基于我已有内容优化表达。
+这是我的简历：
+【请在这里粘贴简历】`,
+
+      interview: `请你扮演腾讯校园招聘面试官，对我进行一场模拟面试。
+目标岗位：【请填写岗位方向，例如产品、运营、技术、设计】
+规则：
+1. 每次只问一个问题。
+2. 总共进行 5 轮追问。
+3. 每轮根据我的回答继续追问。
+4. 面试结束后，请从逻辑表达、岗位理解、项目深度、沟通表达、改进建议五个维度复盘。`,
+
+      star: `请你帮我将下面的经历改写成符合 STAR 法则的面试表达版本。
+要求：
+1. Situation（情境）：用 1 句话交代背景
+2. Task（任务）：明确你的职责和目标
+3. Action（行动）：具体做了什么，突出个人贡献
+4. Result（结果）：用数据量化成果
+
+我的经历：
+【请在这里粘贴你的项目/实习/比赛经历】`
+    };
+
+    function copyPrompt(type) {
+      const text = prompts[type];
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => alert('指令已复制！粘贴到鹅学长对话框即可使用'));
+      } else {
+        const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select();
+        document.execCommand('copy'); document.body.removeChild(ta); alert('指令已复制！');
+      }
+    }
+
+    function renderTree() {
+      const container = document.getElementById('tree-container');
+      const count = exploredNodes.length;
+      const total = 13;
+      const percent = Math.round((count / total) * 100);
+      document.getElementById('explore-count').textContent = count;
+      document.getElementById('explore-percent').textContent = percent + '%';
+      document.getElementById('progress-bar').style.width = percent + '%';
+
+      const trunkHeight = 120 + (percent * 2.5);
+      let svg = `<svg width="100%" height="100%" viewBox="0 0 300 400" class="drop-shadow-lg">
+        <defs><linearGradient id="trunkGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#8B5CF6"/><stop offset="100%" style="stop-color:#A78BFA"/></linearGradient></defs>
+        <ellipse cx="150" cy="380" rx="100" ry="15" fill="#E5E7EB" opacity="0.5"/>
+        <path d="M150 380 Q145 ${380-trunkHeight*0.3} 150 ${380-trunkHeight*0.6} Q155 ${380-trunkHeight*0.8} 150 ${380-trunkHeight}" stroke="url(#trunkGrad)" stroke-width="10" fill="none" stroke-linecap="round"/>
+        <path d="M150 ${380-trunkHeight*0.5} Q110 ${380-trunkHeight*0.7} 80 ${380-trunkHeight*0.8}" stroke="#A78BFA" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.8"/>
+        <path d="M150 ${380-trunkHeight*0.4} Q190 ${380-trunkHeight*0.6} 220 ${380-trunkHeight*0.7}" stroke="#A78BFA" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.8"/>
+        <path d="M150 ${380-trunkHeight*0.65} Q130 ${380-trunkHeight*0.8} 120 ${380-trunkHeight*0.9}" stroke="#C4B5FD" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.7"/>
+        <path d="M150 ${380-trunkHeight*0.55} Q170 ${380-trunkHeight*0.7} 180 ${380-trunkHeight*0.8}" stroke="#C4B5FD" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.7"/>
+      `;
+
+      const nodePositions = [
+        {x: 150, y: 380-trunkHeight, id: 'f1', label: '认知'},
+        {x: 80, y: 380-trunkHeight*0.8, id: 'f2', label: '岗位'},
+        {x: 220, y: 380-trunkHeight*0.7, id: 'f3', label: '文化'},
+        {x: 120, y: 380-trunkHeight*0.9, id: 's1', label: '专业'},
+        {x: 180, y: 380-trunkHeight*0.8, id: 's2', label: '日常'},
+        {x: 100, y: 380-trunkHeight*0.65, id: 's3', label: '技能'},
+        {x: 200, y: 380-trunkHeight*0.6, id: 'j1', label: '简历'},
+        {x: 130, y: 380-trunkHeight*0.75, id: 'j2', label: '面试'},
+        {x: 170, y: 380-trunkHeight*0.7, id: 'j3', label: '盲盒'},
+        {x: 110, y: 380-trunkHeight*0.55, id: 'sr1', label: '时间'},
+        {x: 190, y: 380-trunkHeight*0.5, id: 'sr2', label: '笔试'},
+        {x: 150, y: 380-trunkHeight*0.45, id: 'sr3', label: 'Offer'},
+        {x: 150, y: 380-trunkHeight*0.35, id: 'diagnosis', label: '诊断'}
+      ];
+
+      nodePositions.forEach((pos, i) => {
+        const explored = exploredNodes.includes(pos.id);
+        const color = explored ? '#10B981' : '#D1D5DB';
+        const r = explored ? 14 : 9;
+        if (explored) {
+          svg += `<circle cx="${pos.x}" cy="${pos.y}" r="${r+6}" fill="#10B981" opacity="0.2">
+            <animate attributeName="r" values="${r+6};${r+12};${r+6}" dur="3s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.2;0;0.2" dur="3s" repeatCount="indefinite"/>
+          </circle>`;
+        }
+        svg += `<circle cx="${pos.x}" cy="${pos.y}" r="${r}" fill="${color}" stroke="white" stroke-width="2" class="${explored ? 'animate-leaf' : ''}" style="animation-delay:${i*0.1}s"/>`;
+        if (explored) svg += `<text x="${pos.x}" y="${pos.y + 4}" text-anchor="middle" fill="white" font-size="10" font-weight="bold">${pos.label}</text>`;
+      });
+
+      const leafCount = Math.floor(percent / 8);
+      for (let i = 0; i < leafCount; i++) {
+        const lx = 60 + Math.random() * 180;
+        const ly = 80 + Math.random() * 220;
+        svg += `<ellipse cx="${lx}" cy="${ly}" rx="6" ry="3" fill="#10B981" opacity="0.6" transform="rotate(${Math.random()*360} ${lx} ${ly})"/>`;
+      }
+      svg += '</svg>';
+      container.innerHTML = svg;
+    }
+
+    function updateBadge() {
+      const badge = document.getElementById('tree-badge');
+      const count = exploredNodes.length;
+      if (count > 0) { badge.textContent = count; badge.classList.remove('hidden'); }
+      else badge.classList.add('hidden');
+    }
+
+    function resetProgress() {
+      if (confirm('确定重置所有进度吗？')) {
+        exploredNodes = []; diagnosisDone = false; savedCard = null;
+        localStorage.removeItem('fg_explored'); localStorage.removeItem('fg_diagnosis'); localStorage.removeItem('fg_card');
+        apiHistory = [];
+        renderMap(); renderTree(); updateBadge();
+        document.getElementById('card-result').classList.add('hidden');
+        addSystemMessage('所有进度已重置');
+      }
+    }
+  </script>
+</body>
+</html>
+
+
+
