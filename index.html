@@ -295,16 +295,32 @@
       excited: { color: 'emerald', label: '超级兴奋', greeting: '哇，隔着屏幕都能感受到你的能量！想往哪儿冲？我陪你！🚀', emoji: '🤩' }
     };
 
+    // FIX: 收紧关键词，避免与工具指令内容冲突
     const routeIntents = {
-      open_map: { keywords: ['地图','探索','副本','岛屿'], action: () => { showScreen('map-screen'); return '地图给你打开啦 🗺️ 去解锁新副本吧！'; } },
-      open_diagnosis: { keywords: ['诊断','成长卡','测一测'], action: () => { 
-        return '成长诊断在底部导航的「📋 诊断」页面里～<<br><br>你可以填写年级、专业、感兴趣方向和当前困惑，我会生成一张专属成长卡，包括：<br>• 你目前处于什么阶段<br>• 推荐探索方向<br>• 当前重点任务<br>• 7天行动计划<br><br>填完还能保存到成长树 🌳 去点亮新节点！要现在去试试吗？点底部「📋 诊断」就行～'; 
-      } },
-      open_tools: { keywords: ['工具','工具箱','简历诊断','模拟面试'], action: () => { 
-        return '工具箱在底部导航的「🛠️ 工具」页面里，目前有三大工具：<br><br>📄 <strong>简历诊所</strong> — 复制诊断指令，粘贴你的简历，我从5个维度打分<br>🎤 <strong>模拟面试</strong> — 复制面试指令，选择岗位，我扮演面试官进行5轮追问<br>🌟 <strong>STAR案例生成器</strong> — 粘贴你的项目经历，自动改写成STAR法则版本<br><br>都是复制指令 → 粘贴到对话框就能用的格式，很方便！点底部「🛠️ 工具」去看看吧～'; 
-      } },
-      open_tree: { keywords: ['成长树','我的树','进度'], action: () => { showScreen('tree-screen'); return '看看你的成长树 🌳 又茂盛了多少？'; } },
-      open_chat: { keywords: ['聊天','说话','聊聊'], action: () => { showScreen('chat-screen'); return '回到聊天 💬 继续聊！'; } }
+      open_map: { 
+        keywords: ['去地图','打开地图','探索页面','地图在哪'], 
+        action: () => { showScreen('map-screen'); return '地图给你打开啦 🗺️ 去解锁新副本吧！'; } 
+      },
+      open_diagnosis: { 
+        keywords: ['去诊断','打开诊断','诊断页面','成长卡在哪'], 
+        action: () => { 
+          return '成长诊断在底部导航的「📋 诊断」页面里～\n\n你可以填写年级、专业、感兴趣方向和当前困惑，我会生成一张专属成长卡，包括：\n• 你目前处于什么阶段\n• 推荐探索方向\n• 当前重点任务\n• 7天行动计划\n\n填完还能保存到成长树 🌳 去点亮新节点！要现在去试试吗？点底部「📋 诊断」就行～'; 
+        } 
+      },
+      open_tools: { 
+        keywords: ['去工具箱','打开工具','工具页面','工具箱在哪'], 
+        action: () => { 
+          return '工具箱在底部导航的「🛠️ 工具」页面里，目前有三大工具：\n\n📄 <strong>简历诊所</strong> — 复制诊断指令，粘贴你的简历，我从5个维度打分\n🎤 <strong>模拟面试</strong> — 复制面试指令，选择岗位，我扮演面试官进行5轮追问\n🌟 <strong>STAR案例生成器</strong> — 粘贴你的项目经历，自动改写成STAR法则版本\n\n都是复制指令 → 粘贴到对话框就能用的格式，很方便！点底部「🛠️ 工具」去看看吧～'; 
+        } 
+      },
+      open_tree: { 
+        keywords: ['去成长树','打开成长树','成长树在哪','我的树'], 
+        action: () => { showScreen('tree-screen'); return '看看你的成长树 🌳 又茂盛了多少？'; } 
+      },
+      open_chat: { 
+        keywords: ['去聊天','回聊天','回首页'], 
+        action: () => { showScreen('chat-screen'); return '回到聊天 💬 继续聊！'; } 
+      }
     };
 
     function detectRouteIntent(text) {
@@ -382,9 +398,8 @@
       addSystemMessage(`鹅瓣已切换为「${config.label}」陪伴模式`);
       setTimeout(() => addGooseMessage(config.greeting), 300);
       
-      // 新增：功能导览介绍
       setTimeout(() => {
-        addGooseMessage(`我主要有这几个功能，你可以随时点底部导航切换：<br><br>💬 <strong>聊天</strong> — 跟我随便聊，问腾讯岗位、校招时间线、职业困惑都可以<br>🗺️ <strong>探索</strong> — 按年级解锁职业副本，从大一认知到大四冲刺<br>📋 <strong>诊断</strong> — 填写你的情况，生成专属成长卡和行动计划<br>🛠️ <strong>工具箱</strong> — 简历诊所、模拟面试、STAR案例生成器，复制指令就能用<br>🌳 <strong>成长树</strong> — 记录你的探索进度，解锁越多树越茂盛<br><br>你想从哪儿开始？或者直接跟我聊聊你现在的情况～`);
+        addGooseMessage(`我主要有这几个功能，你可以随时点底部导航切换：<br><br>💬 <strong>聊天</strong> — 跟我随便聊，问腾讯岗位、校招时间线、职业困惑都可以<br>🗺️ <strong>探索</strong> — 按年级解锁职业副本，从大一认知到大四冲刺<br>📋 <strong>诊断</strong> — 填写你的情况，我生成专属成长卡和行动计划<br>🛠️ <strong>工具箱</strong> — 简历诊所、模拟面试、STAR案例生成器，复制指令就能用<br>🌳 <strong>成长树</strong> — 记录你的探索进度，解锁越多树越茂盛<br><br>你想从哪儿开始？或者直接跟我聊聊你现在的情况～`);
       }, 900);
       
       if (diagnosisDone && savedCard) {
@@ -405,7 +420,6 @@
         const container = document.getElementById('chat-messages');
         const wrapper = document.createElement('div');
         wrapper.className = 'flex justify-start animate-pop';
-        // 支持换行与 HTML 标签
         const htmlText = text.replace(/\n/g, '<br>');
         wrapper.innerHTML = `<div class="flex gap-2 max-w-[85%]"><div class="w-8 h-8 rounded-full bg-gray-800 flex-shrink-0 flex items-center justify-center mt-1"><span class="text-white text-xs">🐧</span></div><div class="bubble-goose px-4 py-3 text-sm leading-relaxed">${htmlText}</div></div>`;
         container.appendChild(wrapper); scrollToBottom();
@@ -434,18 +448,25 @@
 
     function hideTyping() { const el = document.getElementById('typing-indicator'); if (el) el.remove(); }
 
+    // FIX: 超过40字视为粘贴指令，直接走API，不走路由意图
     async function sendMessage() {
       const input = document.getElementById('chat-input');
-      const text = input.value.trim(); if (!text) return;
-      addUserMessage(text); input.value = '';
+      const text = input.value.trim(); 
+      if (!text) return;
+      
+      addUserMessage(text); 
+      input.value = '';
       showTyping();
-      const routeIntent = detectRouteIntent(text);
+      
+      const routeIntent = text.length < 40 ? detectRouteIntent(text) : null;
+      
       let reply;
       if (routeIntent) {
         reply = routeIntent.action();
       } else {
         reply = await callKimiAPI(text);
       }
+      
       hideTyping();
       addGooseMessage(reply);
       apiHistory.push({ role: 'user', content: text });
