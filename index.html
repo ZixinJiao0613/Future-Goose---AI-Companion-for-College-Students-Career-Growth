@@ -68,7 +68,7 @@
         <ellipse cx="102" cy="88" rx="11" ry="28" fill="#1F2937" style="transform-origin:100px 85px;animation:wingRight 2s ease-in-out infinite"/>
       </svg>
     </div>
-    <h1 class="text-3xl font-bold text-gray-900 mb-2 relative z-10">你好，我是鹅学长</h1>
+    <h1 class="text-3xl font-bold text-gray-900 mb-2 relative z-10">你好，我是鹅瓣</h1>
     <p class="text-gray-600 mb-10 text-center relative z-10 text-sm max-w-xs">从大一到校招，陪你一步步看清未来。今天感觉怎么样？</p>
     <div class="grid grid-cols-2 gap-3 w-full max-w-xs relative z-10">
       <button onclick="setMood('curious')" class="glass p-4 rounded-2xl flex flex-col items-center gap-2 hover:scale-105 active:scale-95 transition-all duration-300 group">
@@ -101,7 +101,7 @@
           <div class="absolute inset-0 opacity-20" style="background:var(--primary)"></div>
         </div>
         <div>
-          <h2 class="text-sm font-bold text-gray-800">鹅学长</h2>
+          <h2 class="text-sm font-bold text-gray-800">鹅瓣</h2>
           <div class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span><p class="text-xs text-gray-500">在线</p></div>
         </div>
       </div>
@@ -120,7 +120,7 @@
        <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4" style="min-height:0;"></div>
         <div class="glass p-3 pb-5">
           <div class="flex gap-2 items-center">
-            <input type="text" id="chat-input" placeholder="和鹅学长聊聊..." 
+            <input type="text" id="chat-input" placeholder="和鹅瓣聊聊..." 
               class="flex-1 px-4 py-3 rounded-full bg-white/80 border border-gray-200/60 focus:outline-none text-sm shadow-sm transition-all"
               onfocus="this.style.boxShadow='0 0 0 3px var(--primary-light)'" onblur="this.style.boxShadow=''"
               onkeypress="if(event.key==='Enter') sendMessage()">
@@ -252,7 +252,7 @@
               <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl" style="background:linear-gradient(135deg,#F5F3FF,#DDD6FE)">🎤</div>
               <div><h3 class="font-bold text-gray-800">模拟面试</h3><p class="text-xs text-gray-500">5轮追问 + 复盘报告</p></div>
             </div>
-            <p class="text-sm text-gray-600 leading-relaxed mb-3">选择目标岗位后，鹅学长扮演面试官进行 5 轮追问，结束后生成复盘报告。</p>
+            <p class="text-sm text-gray-600 leading-relaxed mb-3">选择目标岗位后，鹅瓣扮演面试官进行 5 轮追问，结束后生成复盘报告。</p>
             <button onclick="copyPrompt('interview')" class="w-full py-2.5 rounded-xl text-sm font-bold text-white shadow-md hover:scale-[1.02] active:scale-95 transition-all" style="background:linear-gradient(135deg,#7C3AED,#A78BFA)">复制面试指令</button>
           </div>
           <div class="glass rounded-2xl p-5 card-hover">
@@ -320,7 +320,7 @@
       if (savedCard) {
         profile = `\n【用户画像】${savedCard.grade}学生，专业${savedCard.major}，感兴趣方向${savedCard.direction}。`;
       }
-      return `你是"鹅学长"，腾讯的虚拟校园大使。你的性格是：
+      return `你是"鹅瓣"，腾讯的虚拟校园大使。你的性格是：
 - 像一个大三/大四的学长，温暖、有点毒舌、从不打击人
 - 说话简短（每次回复3-5句话），喜欢用emoji，偶尔用互联网黑话自嘲
 - 先关心人，再回答问题
@@ -352,10 +352,10 @@
           throw new Error(err.error || 'API 错误');
         }
         const data = await response.json();
-        return data.choices?.[0]?.message?.content || '鹅学长网络卡了，再试一次？😅';
+        return data.choices?.[0]?.message?.content || '鹅瓣网络卡了，再试一次？😅';
       } catch (error) {
         console.error('Kimi API Error:', error);
-        return '鹅学长暂时断网了...你可以先去探索地图逛逛，或者刷新试试 🐧';
+        return '鹅瓣暂时断网了...你可以先去探索地图逛逛，或者刷新试试 🐧';
       }
     }
 
@@ -378,7 +378,7 @@
       container.innerHTML = '';
       apiHistory = [];
       const config = moodConfig[currentMood];
-      addSystemMessage(`鹅学长已切换为「${config.label}」陪伴模式`);
+      addSystemMessage(`鹅瓣已切换为「${config.label}」陪伴模式`);
       setTimeout(() => addGooseMessage(config.greeting), 300);
       if (diagnosisDone && savedCard) {
         setTimeout(() => addGooseMessage(`看到你之前做了成长诊断，你的 ${savedCard.recommend} 方向很有意思！想深入聊聊吗？`), 1500);
@@ -459,8 +459,8 @@
 
     const gradeData = {
       freshman: { title: '认知岛', subtitle: '大一 · 打开职业视野', gradient: 'from-blue-400 via-cyan-400 to-teal-300', shadow: 'shadow-blue-200', desc: '了解互联网行业、腾讯业务版图、岗位类型，建立初步职业地图。不要急着投递，先建立认知。', nodes: [{id:'f1',title:'鹅厂业务版图',icon:'🏢',desc:'六大事业群：WXG、IEG、PCG、CSIG、CDG、TEG，你熟悉几个？'},{id:'f2',title:'互联网岗位家族',icon:'👨‍💻',desc:'技术、产品、运营、设计、市场...每个岗位日常做什么？'},{id:'f3',title:'鹅厂文化初探',icon:'🎨',desc:'"用户为本，科技向善"不只是标语，是做事方式。'}] },
-      sophomore: { title: '关联岛', subtitle: '大二 · 连接专业与未来', gradient: 'from-purple-400 via-fuchsia-400 to-pink-300', shadow: 'shadow-purple-200', desc: '把专业、兴趣和岗位方向连接起来。开始积累课程项目、比赛经历，练习表达。', nodes: [{id:'s1',title:'我的专业能去哪',icon:'🔮',desc:'学计算机只能做开发？学新闻只能做记者？打破思维定势。'},{id:'s2',title:'鹅学长的一天',icon:'⏰',desc:'沉浸式体验：9:30 到公司 → 站会 → 写文档 → 7点下班（顺利的话😂）'},{id:'s3',title:'技能树点亮',icon:'💡',desc:'大二该开始攒什么？硬技能 + 项目经验 + 一段实习/比赛。'}] },
-      junior: { title: '实战岛', subtitle: '大三 · 实习通关攻略', gradient: 'from-orange-400 via-amber-400 to-yellow-300', shadow: 'shadow-orange-200', desc: '聚焦目标岗位，补齐简历、项目复盘和面试表达。这是最关键的准备期。', nodes: [{id:'j1',title:'简历诊所',icon:'📄',desc:'AI 五维度诊断：匹配度、量化度、清晰度、可信度、追问风险。'},{id:'j2',title:'模拟面试间',icon:'🎤',desc:'鹅学长扮演面试官，5 轮追问 + 复盘报告。'},{id:'j3',title:'部门文化盲盒',icon:'🎁',desc:'随机解锁 WXG、IEG、CSIG...不同 BG 的氛围差异。'}] },
+      sophomore: { title: '关联岛', subtitle: '大二 · 连接专业与未来', gradient: 'from-purple-400 via-fuchsia-400 to-pink-300', shadow: 'shadow-purple-200', desc: '把专业、兴趣和岗位方向连接起来。开始积累课程项目、比赛经历，练习表达。', nodes: [{id:'s1',title:'我的专业能去哪',icon:'🔮',desc:'学计算机只能做开发？学新闻只能做记者？打破思维定势。'},{id:'s2',title:'鹅瓣的一天',icon:'⏰',desc:'沉浸式体验：9:30 到公司 → 站会 → 写文档 → 7点下班（顺利的话😂）'},{id:'s3',title:'技能树点亮',icon:'💡',desc:'大二该开始攒什么？硬技能 + 项目经验 + 一段实习/比赛。'}] },
+      junior: { title: '实战岛', subtitle: '大三 · 实习通关攻略', gradient: 'from-orange-400 via-amber-400 to-yellow-300', shadow: 'shadow-orange-200', desc: '聚焦目标岗位，补齐简历、项目复盘和面试表达。这是最关键的准备期。', nodes: [{id:'j1',title:'简历诊所',icon:'📄',desc:'AI 五维度诊断：匹配度、量化度、清晰度、可信度、追问风险。'},{id:'j2',title:'模拟面试间',icon:'🎤',desc:'鹅瓣扮演面试官，5 轮追问 + 复盘报告。'},{id:'j3',title:'部门文化盲盒',icon:'🎁',desc:'随机解锁 WXG、IEG、CSIG...不同 BG 的氛围差异。'}] },
       senior: { title: '冲刺岛', subtitle: '大四 · 校招决胜时刻', gradient: 'from-red-400 via-rose-400 to-pink-300', shadow: 'shadow-red-200', desc: '完成岗位匹配、投递节奏管理、面试复盘和心态支持。稳住，我们能赢。', nodes: [{id:'sr1',title:'校招时间轴',icon:'📅',desc:'8 月网申 → 9 月笔试 → 10-11 月面试 → 11-12 月 Offer。'},{id:'sr2',title:'笔试通关',icon:'✏️',desc:'行测 + 专业题。提前刷题，专业知识靠平时积累。'},{id:'sr3',title:'Offer 选择',icon:'🎯',desc:'看业务前景、团队氛围、成长空间。钱是最后考虑的。'}] }
     };
 
@@ -499,7 +499,7 @@
         'f2': '互联网岗位主要分三大类：技术（写代码）、产品（想方案）、设计（做体验）。当然还有很多支撑岗位，比如 HR、财务、法务。你想深入了解哪类？',
         'f3': '"用户为本，科技向善"是腾讯的愿景。简单理解就是：做产品要站在用户角度想问题，用技术解决真实的社会问题。你觉得你平时用的哪个产品做到了这点？',
         's1': '专业和岗位的关联其实没那么绝对。我认识学哲学的学姐在做用户研究，学物理的师兄在做算法。你的专业是什么？我可以帮你想想对口方向。',
-        's2': '鹅学长的一天：9:30 到公司 → 10:00 站会同步进度 → 下午写文档/开会 → 晚上 7 点下班（如果顺利的话😂）。当然不同部门差异很大。',
+        's2': '鹅瓣的一天：9:30 到公司 → 10:00 站会同步进度 → 下午写文档/开会 → 晚上 7 点下班（如果顺利的话😂）。当然不同部门差异很大。',
         's3': '大二建议点亮三盏灯：1. 一个硬技能（如 Python/PS/SQL）；2. 一个项目经验（课程大作业也行）；3. 一段相关实习或比赛。你现在有几盏亮了？',
         'j1': '简历诊所开张！发给我你的简历重点，或者告诉我：你简历上最自豪的一个项目是什么？',
         'j2': '模拟面试开始！请用 2 分钟介绍你自己，重点讲一个你最有成就感的项目。准备好了吗？',
@@ -523,7 +523,7 @@
       else if (grade === '大三') { stage = '实习准备期'; focus = '聚焦目标岗位，补齐简历、项目复盘和面试表达。'; action = '本周完成 1 版简历优化，并进行 1 次模拟面试。'; }
       else { stage = '求职冲刺期'; focus = '围绕目标岗位做简历精修、面试训练和投递节奏管理。'; action = '本周完成岗位匹配表、简历定稿和 2 次模拟面试。'; }
       const recommend = direction === '暂不清楚' ? '建议先探索技术、产品、运营三个基础方向，再根据专业和经历收敛。' : `建议优先探索「${direction}」方向，并结合「${major}」背景寻找匹配岗位。`;
-      const summary = `你目前处于「${stage}」。结合你的专业「${major}」、经历「${experience}」和困惑「${problem}」，鹅学长建议你先完成阶段性能力补齐，再进入下一步求职准备。`;
+      const summary = `你目前处于「${stage}」。结合你的专业「${major}」、经历「${experience}」和困惑「${problem}」，鹅瓣建议你先完成阶段性能力补齐，再进入下一步求职准备。`;
       document.getElementById('card-summary').innerText = summary;
       document.getElementById('card-recommend').innerText = recommend;
       document.getElementById('card-focus').innerText = focus;
@@ -584,7 +584,7 @@
     function copyPrompt(type) {
       const text = prompts[type];
       if (navigator.clipboard) {
-        navigator.clipboard.writeText(text).then(() => alert('指令已复制！粘贴到鹅学长对话框即可使用'));
+        navigator.clipboard.writeText(text).then(() => alert('指令已复制！粘贴到鹅瓣对话框即可使用'));
       } else {
         const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select();
         document.execCommand('copy'); document.body.removeChild(ta); alert('指令已复制！');
