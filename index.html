@@ -26,7 +26,6 @@
     .animate-slide-up { animation: slideUp 0.5s ease forwards; }
     .animate-leaf { animation: leafGrow 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards; }
     .glass { background: var(--glass-bg); backdrop-filter: blur(14px) saturate(1.3); -webkit-backdrop-filter: blur(14px) saturate(1.3); border: 1px solid var(--glass-border); }
-    /* FIX 2: .screen 明确高度约束，防止内容撑开 */
     .screen { display: none; opacity: 0; transition: opacity 0.35s ease; height: 100%;}
     .screen.active { display: flex; opacity: 1; height: 100%;}
     .bubble-user { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; border-radius: 20px 20px 4px 20px; box-shadow: 0 4px 15px -3px var(--primary-light); }
@@ -92,7 +91,6 @@
   </div>
 
   <!-- 主应用 -->
-  <!-- FIX 1: 加 flex，让 flex-col 生效，高度链条打通 -->
   <div id="app-container" class="hidden flex h-screen flex-col overflow-hidden">
     <header class="glass fixed top-0 w-full z-40 px-4 py-3 flex items-center justify-between">
       <div class="flex items-center gap-3">
@@ -108,7 +106,7 @@
       <div class="flex items-center gap-2">
         <button onclick="showScreen('diagnosis-screen')" class="w-9 h-9 rounded-full flex items-center justify-center hover:bg-white/50 transition-colors text-lg" title="成长诊断">📋</button>
         <button onclick="showScreen('tree-screen')" class="w-9 h-9 rounded-full flex items-center justify-center hover:bg-white/50 transition-colors relative text-lg" title="成长树">
-          🌳<span id="tree-badge" class="absolute -top-1 -right-1 w-5 h-5 rounded-full text-white text-xs flex items-center justify-center hidden" style="background:var(--primary)">0</span>
+          🌳<<span id="tree-badge" class="absolute -top-1 -right-1 w-5 h-5 rounded-full text-white text-xs flex items-center justify-center hidden" style="background:var(--primary)">0</span>
         </button>
       </div>
     </header>
@@ -150,7 +148,6 @@
       </div>
 
       <!-- 成长树 -->
-      <!-- FIX 3: 移除 items-center，避免 flex 居中导致滚动死区 -->
       <div id="tree-screen" class="screen flex-col flex-1 overflow-y-auto hide-scrollbar p-4">
         <div class="w-full max-w-sm mb-4 mx-auto">
           <h2 class="text-xl font-bold text-gray-900">我的成长树</h2>
@@ -165,7 +162,7 @@
           <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
             <div id="progress-bar" class="h-full rounded-full transition-all duration-700" style="width:0%;background:linear-gradient(90deg,var(--primary),var(--primary-light))"></div>
           </div>
-          <p class="text-xs text-gray-400 mt-2">已解锁 <span id="explore-count" class="font-bold text-gray-600">0</span>个节点</p>
+          <p class="text-xs text-gray-400 mt-2">已解锁 <span id="explore-count" class="font-bold text-gray-600">0</span> / 12 个节点</p>
         </div>
         <button onclick="resetProgress()" class="mt-4 text-xs text-gray-400 underline mx-auto">重置进度</button>
       </div>
@@ -300,8 +297,12 @@
 
     const routeIntents = {
       open_map: { keywords: ['地图','探索','副本','岛屿'], action: () => { showScreen('map-screen'); return '地图给你打开啦 🗺️ 去解锁新副本吧！'; } },
-      open_diagnosis: { keywords: ['诊断','成长卡','测一测'], action: () => { showScreen('diagnosis-screen'); return '来做个成长诊断 📋 填完我帮你分析！'; } },
-      open_tools: { keywords: ['工具','工具箱','简历诊断','模拟面试'], action: () => { showScreen('tools-screen'); return '工具箱已打开 🛠️ 简历诊所和模拟面试都在这儿！'; } },
+      open_diagnosis: { keywords: ['诊断','成长卡','测一测'], action: () => { 
+        return '成长诊断在底部导航的「📋 诊断」页面里～<<br><br>你可以填写年级、专业、感兴趣方向和当前困惑，我会生成一张专属成长卡，包括：<br>• 你目前处于什么阶段<br>• 推荐探索方向<br>• 当前重点任务<br>• 7天行动计划<br><br>填完还能保存到成长树 🌳 去点亮新节点！要现在去试试吗？点底部「📋 诊断」就行～'; 
+      } },
+      open_tools: { keywords: ['工具','工具箱','简历诊断','模拟面试'], action: () => { 
+        return '工具箱在底部导航的「🛠️ 工具」页面里，目前有三大工具：<br><br>📄 <strong>简历诊所</strong> — 复制诊断指令，粘贴你的简历，我从5个维度打分<br>🎤 <strong>模拟面试</strong> — 复制面试指令，选择岗位，我扮演面试官进行5轮追问<br>🌟 <strong>STAR案例生成器</strong> — 粘贴你的项目经历，自动改写成STAR法则版本<br><br>都是复制指令 → 粘贴到对话框就能用的格式，很方便！点底部「🛠️ 工具」去看看吧～'; 
+      } },
       open_tree: { keywords: ['成长树','我的树','进度'], action: () => { showScreen('tree-screen'); return '看看你的成长树 🌳 又茂盛了多少？'; } },
       open_chat: { keywords: ['聊天','说话','聊聊'], action: () => { showScreen('chat-screen'); return '回到聊天 💬 继续聊！'; } }
     };
@@ -380,8 +381,14 @@
       const config = moodConfig[currentMood];
       addSystemMessage(`鹅瓣已切换为「${config.label}」陪伴模式`);
       setTimeout(() => addGooseMessage(config.greeting), 300);
+      
+      // 新增：功能导览介绍
+      setTimeout(() => {
+        addGooseMessage(`我主要有这几个功能，你可以随时点底部导航切换：<br><br>💬 <strong>聊天</strong> — 跟我随便聊，问腾讯岗位、校招时间线、职业困惑都可以<br>🗺️ <strong>探索</strong> — 按年级解锁职业副本，从大一认知到大四冲刺<br>📋 <strong>诊断</strong> — 填写你的情况，我生成专属成长卡和行动计划<br>🛠️ <strong>工具箱</strong> — 简历诊所、模拟面试、STAR案例生成器，复制指令就能用<br>🌳 <strong>成长树</strong> — 记录你的探索进度，解锁越多树越茂盛<br><br>你想从哪儿开始？或者直接跟我聊聊你现在的情况～`);
+      }, 900);
+      
       if (diagnosisDone && savedCard) {
-        setTimeout(() => addGooseMessage(`看到你之前做了成长诊断，你的 ${savedCard.recommend} 方向很有意思！想深入聊聊吗？`), 1500);
+        setTimeout(() => addGooseMessage(`看到你之前做了成长诊断，你的 ${savedCard.recommend} 方向很有意思！想深入聊聊吗？`), 2800);
       }
     }
 
@@ -398,7 +405,9 @@
         const container = document.getElementById('chat-messages');
         const wrapper = document.createElement('div');
         wrapper.className = 'flex justify-start animate-pop';
-        wrapper.innerHTML = `<div class="flex gap-2 max-w-[85%]"><div class="w-8 h-8 rounded-full bg-gray-800 flex-shrink-0 flex items-center justify-center mt-1"><span class="text-white text-xs">🐧</span></div><div class="bubble-goose px-4 py-3 text-sm leading-relaxed">${text}</div></div>`;
+        // 支持换行与 HTML 标签
+        const htmlText = text.replace(/\n/g, '<br>');
+        wrapper.innerHTML = `<div class="flex gap-2 max-w-[85%]"><div class="w-8 h-8 rounded-full bg-gray-800 flex-shrink-0 flex items-center justify-center mt-1"><span class="text-white text-xs">🐧</span></div><div class="bubble-goose px-4 py-3 text-sm leading-relaxed">${htmlText}</div></div>`;
         container.appendChild(wrapper); scrollToBottom();
       }, delay);
     }
