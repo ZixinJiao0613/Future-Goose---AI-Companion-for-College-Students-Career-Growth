@@ -8,109 +8,67 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     * { font-family: 'Noto Sans SC', -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
-
-    :root {
-      --primary: #2563EB; --primary-light: #93C5FD; --bg: #EFF6FF;
-      --glass-bg: rgba(255,255,255,0.82); --glass-border: rgba(255,255,255,0.6);
-    }
+    :root { --primary: #2563EB; --primary-light: #93C5FD; --bg: #EFF6FF; --glass-bg: rgba(255,255,255,0.82); --glass-border: rgba(255,255,255,0.6); }
     .mood-curious { --primary: #2563EB; --primary-light: #93C5FD; --bg: #EFF6FF; }
     .mood-confused { --primary: #7C3AED; --primary-light: #C4B5FD; --bg: #F5F3FF; }
     .mood-anxious { --primary: #EA580C; --primary-light: #FDBA74; --bg: #FFF7ED; }
     .mood-excited { --primary: #059669; --primary-light: #6EE7B7; --bg: #ECFDF5; }
-
     body { background: var(--bg); transition: background 0.6s ease; }
-
     @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
     @keyframes blink { 0%,90%,100%{transform:scaleY(1)} 95%{transform:scaleY(0.1)} }
     @keyframes popIn { from{opacity:0;transform:scale(0.85) translateY(12px)} to{opacity:1;transform:scale(1) translateY(0)} }
     @keyframes slideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
     @keyframes leafGrow { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
     @keyframes typing { 0%,100%{opacity:0.3} 50%{opacity:1} }
-    @keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
-
     .animate-float { animation: float 4s ease-in-out infinite; }
     .animate-blink { animation: blink 4s infinite; transform-origin: center; }
     .animate-pop { animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards; }
     .animate-slide-up { animation: slideUp 0.5s ease forwards; }
     .animate-leaf { animation: leafGrow 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards; }
-
-    .glass {
-      background: var(--glass-bg);
-      backdrop-filter: blur(14px) saturate(1.3);
-      -webkit-backdrop-filter: blur(14px) saturate(1.3);
-      border: 1px solid var(--glass-border);
-    }
+    .glass { background: var(--glass-bg); backdrop-filter: blur(14px) saturate(1.3); -webkit-backdrop-filter: blur(14px) saturate(1.3); border: 1px solid var(--glass-border); }
     .screen { display: none; opacity: 0; transition: opacity 0.35s ease; }
     .screen.active { display: flex; opacity: 1; }
-
-    .bubble-user {
-      background: linear-gradient(135deg, var(--primary), var(--primary-light));
-      color: white; border-radius: 20px 20px 4px 20px;
-      box-shadow: 0 4px 15px -3px var(--primary-light);
-    }
-    .bubble-goose {
-      background: white; color: #374151; border-radius: 20px 20px 20px 4px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-    }
+    .bubble-user { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; border-radius: 20px 20px 4px 20px; box-shadow: 0 4px 15px -3px var(--primary-light); }
+    .bubble-goose { background: white; color: #374151; border-radius: 20px 20px 20px 4px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
     .nav-item.active { color: var(--primary); }
     .nav-item.active span:last-child { font-weight: 700; }
-
     .hide-scrollbar::-webkit-scrollbar { display: none; }
     .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
     .typing-dot { animation: typing 1.4s infinite; }
     .typing-dot:nth-child(2) { animation-delay: 0.2s; }
     .typing-dot:nth-child(3) { animation-delay: 0.4s; }
-
-    .shimmer-text {
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
-      background-size: 200% 100%; animation: shimmer 3s infinite;
-    }
-
     .island-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
     .island-card:active { transform: scale(0.98); }
     .node-item { transition: all 0.3s ease; }
     .node-item:active { transform: scale(0.97); }
-
     .card-hover:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.08); }
   </style>
-<base target="_blank">
 <base target="_blank">
 </head>
 <body class="h-screen overflow-hidden text-gray-800">
 
-  <!-- ========== 欢迎页 ========== -->
+  <!-- 欢迎页 -->
   <div id="welcome-screen" class="screen active fixed inset-0 flex-col items-center justify-center p-6 z-50">
     <div class="absolute inset-0 overflow-hidden pointer-events-none">
       <div class="absolute top-10 left-10 w-40 h-40 rounded-full opacity-20" style="background: var(--primary-light); filter: blur(50px);"></div>
       <div class="absolute bottom-20 right-10 w-48 h-48 rounded-full opacity-20" style="background: var(--primary); filter: blur(60px);"></div>
     </div>
-
     <div class="animate-float relative z-10 mb-6">
       <svg width="160" height="180" viewBox="0 0 120 140" class="drop-shadow-2xl">
         <ellipse cx="60" cy="82" rx="48" ry="58" fill="#1F2937"/>
         <ellipse cx="60" cy="88" rx="32" ry="42" fill="white"/>
         <circle cx="42" cy="62" r="10" fill="white"/><circle cx="78" cy="62" r="10" fill="white"/>
-        <g class="animate-blink">
-          <ellipse cx="42" cy="62" rx="6" ry="7" fill="#1F2937"/>
-          <ellipse cx="78" cy="62" rx="6" ry="7" fill="#1F2937"/>
-        </g>
-        <circle cx="40" cy="58" r="2.5" fill="white" opacity="0.8"/>
-        <circle cx="76" cy="58" r="2.5" fill="white" opacity="0.8"/>
-        <ellipse cx="60" cy="78" rx="9" ry="6" fill="#F59E0B"/>
-        <ellipse cx="60" cy="76" rx="3" ry="1.5" fill="#FCD34D"/>
-        <ellipse cx="30" cy="75" rx="6" ry="3" fill="#FCA5A5" opacity="0.6"/>
-        <ellipse cx="90" cy="75" rx="6" ry="3" fill="#FCA5A5" opacity="0.6"/>
-        <ellipse cx="42" cy="132" rx="14" ry="7" fill="#F59E0B"/>
-        <ellipse cx="78" cy="132" rx="14" ry="7" fill="#F59E0B"/>
+        <g class="animate-blink"><ellipse cx="42" cy="62" rx="6" ry="7" fill="#1F2937"/><ellipse cx="78" cy="62" rx="6" ry="7" fill="#1F2937"/></g>
+        <circle cx="40" cy="58" r="2.5" fill="white" opacity="0.8"/><circle cx="76" cy="58" r="2.5" fill="white" opacity="0.8"/>
+        <ellipse cx="60" cy="78" rx="9" ry="6" fill="#F59E0B"/><ellipse cx="60" cy="76" rx="3" ry="1.5" fill="#FCD34D"/>
+        <ellipse cx="30" cy="75" rx="6" ry="3" fill="#FCA5A5" opacity="0.6"/><ellipse cx="90" cy="75" rx="6" ry="3" fill="#FCA5A5" opacity="0.6"/>
+        <ellipse cx="42" cy="132" rx="14" ry="7" fill="#F59E0B"/><ellipse cx="78" cy="132" rx="14" ry="7" fill="#F59E0B"/>
         <ellipse cx="18" cy="88" rx="11" ry="28" fill="#1F2937" style="transform-origin:20px 85px;animation:wingLeft 2s ease-in-out infinite"/>
         <ellipse cx="102" cy="88" rx="11" ry="28" fill="#1F2937" style="transform-origin:100px 85px;animation:wingRight 2s ease-in-out infinite"/>
       </svg>
     </div>
-
     <h1 class="text-3xl font-bold text-gray-900 mb-2 relative z-10">你好，我是鹅学长</h1>
     <p class="text-gray-600 mb-10 text-center relative z-10 text-sm max-w-xs">从大一到校招，陪你一步步看清未来。今天感觉怎么样？</p>
-
     <div class="grid grid-cols-2 gap-3 w-full max-w-xs relative z-10">
       <button onclick="setMood('curious')" class="glass p-4 rounded-2xl flex flex-col items-center gap-2 hover:scale-105 active:scale-95 transition-all duration-300 group">
         <span class="text-3xl group-hover:scale-110 transition-transform">🤔</span>
@@ -132,9 +90,8 @@
     <p class="text-xs text-gray-400 mt-8 relative z-10">腾讯校园大使 · AI 成长陪伴体</p>
   </div>
 
-  <!-- ========== 主应用 ========== -->
+  <!-- 主应用 -->
   <div id="app-container" class="hidden h-screen flex-col">
-
     <header class="glass fixed top-0 w-full z-40 px-4 py-3 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center shadow-lg relative overflow-hidden">
@@ -154,10 +111,10 @@
       </div>
     </header>
 
-    <main class="flex-1 overflow-hidden pt-16 pb-20">
+    <main class="flex-1 flex flex-col overflow-hidden pt-16 pb-20">
 
       <!-- 聊天舱 -->
-      <div id="chat-screen" class="screen active flex-col h-full">
+      <div id="chat-screen" class="screen active flex-col flex-1">
         <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 hide-scrollbar" style="min-height:0;"></div>
         <div class="glass p-3 pb-5">
           <div class="flex gap-2 items-center">
@@ -182,7 +139,7 @@
       </div>
 
       <!-- 探索地图 -->
-      <div id="map-screen" class="screen flex-col h-full overflow-y-auto hide-scrollbar p-4 space-y-4">
+      <div id="map-screen" class="screen flex-col flex-1 overflow-y-auto hide-scrollbar p-4 space-y-4">
         <div class="mb-2">
           <h2 class="text-xl font-bold text-gray-900">探索地图</h2>
           <p class="text-sm text-gray-500 mt-1">选择年级，解锁职业副本 🗺️</p>
@@ -191,7 +148,7 @@
       </div>
 
       <!-- 成长树 -->
-      <div id="tree-screen" class="screen flex-col h-full overflow-y-auto hide-scrollbar items-center p-4">
+      <div id="tree-screen" class="screen flex-col flex-1 overflow-y-auto hide-scrollbar items-center p-4">
         <div class="w-full max-w-sm mb-4">
           <h2 class="text-xl font-bold text-gray-900">我的成长树</h2>
           <p class="text-sm text-gray-500 mt-1">每一次探索，都会让树更茂盛 🌱</p>
@@ -210,8 +167,8 @@
         <button onclick="resetProgress()" class="mt-4 text-xs text-gray-400 underline">重置进度</button>
       </div>
 
-      <!-- 成长诊断（新增） -->
-      <div id="diagnosis-screen" class="screen flex-col h-full overflow-y-auto hide-scrollbar p-4">
+      <!-- 成长诊断 -->
+      <div id="diagnosis-screen" class="screen flex-col flex-1 overflow-y-auto hide-scrollbar p-4">
         <div class="mb-4">
           <h2 class="text-xl font-bold text-gray-900">成长诊断</h2>
           <p class="text-sm text-gray-500 mt-1">填写基本情况，生成专属成长卡 📋</p>
@@ -220,7 +177,7 @@
           <div class="glass rounded-2xl p-4 space-y-4">
             <div>
               <label class="block text-sm font-bold text-gray-700 mb-1.5">你的年级</label>
-              <select id="d-grade" class="w-full px-3 py-2.5 rounded-xl bg-white/80 border border-gray-200 text-sm focus:outline-none" style="--tw-ring-color:var(--primary-light)">
+              <select id="d-grade" class="w-full px-3 py-2.5 rounded-xl bg-white/80 border border-gray-200 text-sm focus:outline-none">
                 <option>大一</option><option>大二</option><option>大三</option><option>大四</option><option>研究生</option>
               </select>
             </div>
@@ -272,8 +229,8 @@
         </div>
       </div>
 
-      <!-- 工具箱（新增） -->
-      <div id="tools-screen" class="screen flex-col h-full overflow-y-auto hide-scrollbar p-4">
+      <!-- 工具箱 -->
+      <div id="tools-screen" class="screen flex-col flex-1 overflow-y-auto hide-scrollbar p-4">
         <div class="mb-4">
           <h2 class="text-xl font-bold text-gray-900">求职工具箱</h2>
           <p class="text-sm text-gray-500 mt-1">把高频能力做成随手可用的工具 🛠️</p>
@@ -287,7 +244,6 @@
             <p class="text-sm text-gray-600 leading-relaxed mb-3">从岗位匹配度、经历量化程度、表达清晰度、亮点可信度、面试追问风险五个维度诊断。</p>
             <button onclick="copyPrompt('resume')" class="w-full py-2.5 rounded-xl text-sm font-bold text-white shadow-md hover:scale-[1.02] active:scale-95 transition-all" style="background:linear-gradient(135deg,var(--primary),var(--primary-light))">复制诊断指令</button>
           </div>
-
           <div class="glass rounded-2xl p-5 card-hover">
             <div class="flex items-center gap-3 mb-3">
               <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl" style="background:linear-gradient(135deg,#F5F3FF,#DDD6FE)">🎤</div>
@@ -296,7 +252,6 @@
             <p class="text-sm text-gray-600 leading-relaxed mb-3">选择目标岗位后，鹅学长扮演面试官进行 5 轮追问，结束后生成复盘报告。</p>
             <button onclick="copyPrompt('interview')" class="w-full py-2.5 rounded-xl text-sm font-bold text-white shadow-md hover:scale-[1.02] active:scale-95 transition-all" style="background:linear-gradient(135deg,#7C3AED,#A78BFA)">复制面试指令</button>
           </div>
-
           <div class="glass rounded-2xl p-5 card-hover">
             <div class="flex items-center gap-3 mb-3">
               <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl" style="background:linear-gradient(135deg,#ECFDF5,#D1FAE5)">🌟</div>
@@ -310,7 +265,6 @@
 
     </main>
 
-    <!-- 底部导航 -->
     <nav class="glass fixed bottom-0 w-full flex justify-around py-2 pb-safe border-t border-white/40 z-40">
       <button onclick="showScreen('chat-screen')" class="nav-item flex flex-col items-center gap-0.5 px-5 py-1 text-gray-400 transition-colors" id="nav-chat">
         <span class="text-2xl">💬</span><span class="text-xs">聊天</span>
@@ -328,14 +282,11 @@
   </div>
 
   <script>
-    // ========== 数据层 ==========
     let currentMood = 'curious';
     let exploredNodes = JSON.parse(localStorage.getItem('fg_explored') || '[]');
     let diagnosisDone = JSON.parse(localStorage.getItem('fg_diagnosis') || 'false');
     let savedCard = JSON.parse(localStorage.getItem('fg_card') || 'null');
-
-    // 对话上下文：最近 10 轮（给 API 用）
-    let apiHistory = []; // {role, content}
+    let apiHistory = [];
 
     const moodConfig = {
       curious: { color: 'blue', label: '充满好奇', greeting: '好奇心是最好的老师！今天想探索点什么？🧭', emoji: '🤔' },
@@ -344,7 +295,6 @@
       excited: { color: 'emerald', label: '超级兴奋', greeting: '哇，隔着屏幕都能感受到你的能量！想往哪儿冲？我陪你！🚀', emoji: '🤩' }
     };
 
-    // ========== 前端意图识别（仅用于功能路由） ==========
     const routeIntents = {
       open_map: { keywords: ['地图','探索','副本','岛屿'], action: () => { showScreen('map-screen'); return '地图给你打开啦 🗺️ 去解锁新副本吧！'; } },
       open_diagnosis: { keywords: ['诊断','成长卡','测一测'], action: () => { showScreen('diagnosis-screen'); return '来做个成长诊断 📋 填完我帮你分析！'; } },
@@ -355,22 +305,18 @@
 
     function detectRouteIntent(text) {
       const lower = text.toLowerCase();
-      for (let [name, intent] of Object.entries(routeIntents)) {
-        for (let k of intent.keywords) {
-          if (lower.includes(k)) return intent;
-        }
+      for (let intent of Object.values(routeIntents)) {
+        for (let k of intent.keywords) { if (lower.includes(k)) return intent; }
       }
       return null;
     }
 
-    // ========== System Prompt 构建 ==========
     function buildSystemPrompt() {
       const config = moodConfig[currentMood];
       let profile = '';
       if (savedCard) {
         profile = `\n【用户画像】${savedCard.grade}学生，专业${savedCard.major}，感兴趣方向${savedCard.direction}。`;
       }
-
       return `你是"鹅学长"，腾讯的虚拟校园大使。你的性格是：
 - 像一个大三/大四的学长，温暖、有点毒舌、从不打击人
 - 说话简短（每次回复3-5句话），喜欢用emoji，偶尔用互联网黑话自嘲
@@ -386,26 +332,22 @@
 6. 如果用户问校招时间线，回答：8月网申→9月笔试→10-11月面试→11-12月Offer`;
     }
 
-    // ========== API 调用 ==========
     async function callKimiAPI(userText) {
       const messages = [
         { role: 'system', content: buildSystemPrompt() },
-        ...apiHistory.slice(-8), // 保留最近 8 轮上下文
+        ...apiHistory.slice(-8),
         { role: 'user', content: userText }
       ];
-
       try {
         const response = await fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ messages })
         });
-
         if (!response.ok) {
           const err = await response.json();
           throw new Error(err.error || 'API 错误');
         }
-
         const data = await response.json();
         return data.choices?.[0]?.message?.content || '鹅学长网络卡了，再试一次？😅';
       } catch (error) {
@@ -414,7 +356,6 @@
       }
     }
 
-    // ========== 核心函数 ==========
     function setMood(mood) {
       currentMood = mood;
       document.body.className = `h-screen overflow-hidden text-gray-800 mood-${mood}`;
@@ -432,7 +373,7 @@
     function initChat() {
       const container = document.getElementById('chat-messages');
       container.innerHTML = '';
-      apiHistory = []; // 重置上下文
+      apiHistory = [];
       const config = moodConfig[currentMood];
       addSystemMessage(`鹅学长已切换为「${config.label}」陪伴模式`);
       setTimeout(() => addGooseMessage(config.greeting), 300);
@@ -454,13 +395,7 @@
         const container = document.getElementById('chat-messages');
         const wrapper = document.createElement('div');
         wrapper.className = 'flex justify-start animate-pop';
-        wrapper.innerHTML = `
-          <div class="flex gap-2 max-w-[85%]">
-            <div class="w-8 h-8 rounded-full bg-gray-800 flex-shrink-0 flex items-center justify-center mt-1">
-              <span class="text-white text-xs">🐧</span>
-            </div>
-            <div class="bubble-goose px-4 py-3 text-sm leading-relaxed">${text}</div>
-          </div>`;
+        wrapper.innerHTML = `<div class="flex gap-2 max-w-[85%]"><div class="w-8 h-8 rounded-full bg-gray-800 flex-shrink-0 flex items-center justify-center mt-1"><span class="text-white text-xs">🐧</span></div><div class="bubble-goose px-4 py-3 text-sm leading-relaxed">${text}</div></div>`;
         container.appendChild(wrapper); scrollToBottom();
       }, delay);
     }
@@ -481,47 +416,26 @@
       const container = document.getElementById('chat-messages');
       const div = document.createElement('div');
       div.id = 'typing-indicator'; div.className = 'flex justify-start';
-      div.innerHTML = `
-        <div class="flex gap-2 max-w-[85%]">
-          <div class="w-8 h-8 rounded-full bg-gray-800 flex-shrink-0 flex items-center justify-center"><span class="text-white text-xs">🐧</span></div>
-          <div class="bubble-goose px-4 py-3 flex gap-1.5 items-center">
-            <span class="w-2 h-2 rounded-full bg-gray-400 typing-dot"></span>
-            <span class="w-2 h-2 rounded-full bg-gray-400 typing-dot"></span>
-            <span class="w-2 h-2 rounded-full bg-gray-400 typing-dot"></span>
-          </div>
-        </div>`;
+      div.innerHTML = `<div class="flex gap-2 max-w-[85%]"><div class="w-8 h-8 rounded-full bg-gray-800 flex-shrink-0 flex items-center justify-center"><span class="text-white text-xs">🐧</span></div><div class="bubble-goose px-4 py-3 flex gap-1.5 items-center"><span class="w-2 h-2 rounded-full bg-gray-400 typing-dot"></span><span class="w-2 h-2 rounded-full bg-gray-400 typing-dot"></span><span class="w-2 h-2 rounded-full bg-gray-400 typing-dot"></span></div></div>`;
       container.appendChild(div); scrollToBottom();
     }
 
     function hideTyping() { const el = document.getElementById('typing-indicator'); if (el) el.remove(); }
 
-    // ========== 主对话流程（已接入 API） ==========
     async function sendMessage() {
       const input = document.getElementById('chat-input');
-      const text = input.value.trim(); 
-      if (!text) return;
-
-      addUserMessage(text); 
-      input.value = '';
+      const text = input.value.trim(); if (!text) return;
+      addUserMessage(text); input.value = '';
       showTyping();
-
-      // 1. 先检查是否是功能路由指令
       const routeIntent = detectRouteIntent(text);
       let reply;
-      let isRoute = false;
-
       if (routeIntent) {
         reply = routeIntent.action();
-        isRoute = true;
       } else {
-        // 2. 开放式对话 → 走 Kimi API
         reply = await callKimiAPI(text);
       }
-
       hideTyping();
       addGooseMessage(reply);
-
-      // 3. 记录到 API 上下文（路由指令也记，保持连贯）
       apiHistory.push({ role: 'user', content: text });
       apiHistory.push({ role: 'assistant', content: reply });
       if (apiHistory.length > 10) apiHistory = apiHistory.slice(-10);
@@ -540,79 +454,21 @@
       if (id === 'tree-screen') renderTree();
     }
 
-    // ========== 探索地图 ==========
     const gradeData = {
-      freshman: {
-        title: '认知岛', subtitle: '大一 · 打开职业视野', 
-        gradient: 'from-blue-400 via-cyan-400 to-teal-300', shadow: 'shadow-blue-200',
-        desc: '了解互联网行业、腾讯业务版图、岗位类型，建立初步职业地图。不要急着投递，先建立认知。',
-        nodes: [
-          {id: 'f1', title: '鹅厂业务版图', icon: '🏢', desc: '六大事业群：WXG、IEG、PCG、CSIG、CDG、TEG，你熟悉几个？'},
-          {id: 'f2', title: '互联网岗位家族', icon: '👨‍💻', desc: '技术、产品、运营、设计、市场...每个岗位日常做什么？'},
-          {id: 'f3', title: '鹅厂文化初探', icon: '🎨', desc: '"用户为本，科技向善"不只是标语，是做事方式。'}
-        ]
-      },
-      sophomore: {
-        title: '关联岛', subtitle: '大二 · 连接专业与未来',
-        gradient: 'from-purple-400 via-fuchsia-400 to-pink-300', shadow: 'shadow-purple-200',
-        desc: '把专业、兴趣和岗位方向连接起来。开始积累课程项目、比赛经历，练习表达。',
-        nodes: [
-          {id: 's1', title: '我的专业能去哪', icon: '🔮', desc: '学计算机只能做开发？学新闻只能做记者？打破思维定势。'},
-          {id: 's2', title: '鹅学长的一天', icon: '⏰', desc: '沉浸式体验：9:30 到公司 → 站会 → 写文档 → 7点下班（顺利的话😂）'},
-          {id: 's3', title: '技能树点亮', icon: '💡', desc: '大二该开始攒什么？硬技能 + 项目经验 + 一段实习/比赛。'}
-        ]
-      },
-      junior: {
-        title: '实战岛', subtitle: '大三 · 实习通关攻略',
-        gradient: 'from-orange-400 via-amber-400 to-yellow-300', shadow: 'shadow-orange-200',
-        desc: '聚焦目标岗位，补齐简历、项目复盘和面试表达。这是最关键的准备期。',
-        nodes: [
-          {id: 'j1', title: '简历诊所', icon: '📄', desc: 'AI 五维度诊断：匹配度、量化度、清晰度、可信度、追问风险。'},
-          {id: 'j2', title: '模拟面试间', icon: '🎤', desc: '鹅学长扮演面试官，5 轮追问 + 复盘报告。'},
-          {id: 'j3', title: '部门文化盲盒', icon: '🎁', desc: '随机解锁 WXG、IEG、CSIG...不同 BG 的氛围差异。'}
-        ]
-      },
-      senior: {
-        title: '冲刺岛', subtitle: '大四 · 校招决胜时刻',
-        gradient: 'from-red-400 via-rose-400 to-pink-300', shadow: 'shadow-red-200',
-        desc: '完成岗位匹配、投递节奏管理、面试复盘和心态支持。稳住，我们能赢。',
-        nodes: [
-          {id: 'sr1', title: '校招时间轴', icon: '📅', desc: '8 月网申 → 9 月笔试 → 10-11 月面试 → 11-12 月 Offer。'},
-          {id: 'sr2', title: '笔试通关', icon: '✏️', desc: '行测 + 专业题。提前刷题，专业知识靠平时积累。'},
-          {id: 'sr3', title: 'Offer 选择', icon: '🎯', desc: '看业务前景、团队氛围、成长空间。钱是最后考虑的。'}
-        ]
-      }
+      freshman: { title: '认知岛', subtitle: '大一 · 打开职业视野', gradient: 'from-blue-400 via-cyan-400 to-teal-300', shadow: 'shadow-blue-200', desc: '了解互联网行业、腾讯业务版图、岗位类型，建立初步职业地图。不要急着投递，先建立认知。', nodes: [{id:'f1',title:'鹅厂业务版图',icon:'🏢',desc:'六大事业群：WXG、IEG、PCG、CSIG、CDG、TEG，你熟悉几个？'},{id:'f2',title:'互联网岗位家族',icon:'👨‍💻',desc:'技术、产品、运营、设计、市场...每个岗位日常做什么？'},{id:'f3',title:'鹅厂文化初探',icon:'🎨',desc:'"用户为本，科技向善"不只是标语，是做事方式。'}] },
+      sophomore: { title: '关联岛', subtitle: '大二 · 连接专业与未来', gradient: 'from-purple-400 via-fuchsia-400 to-pink-300', shadow: 'shadow-purple-200', desc: '把专业、兴趣和岗位方向连接起来。开始积累课程项目、比赛经历，练习表达。', nodes: [{id:'s1',title:'我的专业能去哪',icon:'🔮',desc:'学计算机只能做开发？学新闻只能做记者？打破思维定势。'},{id:'s2',title:'鹅学长的一天',icon:'⏰',desc:'沉浸式体验：9:30 到公司 → 站会 → 写文档 → 7点下班（顺利的话😂）'},{id:'s3',title:'技能树点亮',icon:'💡',desc:'大二该开始攒什么？硬技能 + 项目经验 + 一段实习/比赛。'}] },
+      junior: { title: '实战岛', subtitle: '大三 · 实习通关攻略', gradient: 'from-orange-400 via-amber-400 to-yellow-300', shadow: 'shadow-orange-200', desc: '聚焦目标岗位，补齐简历、项目复盘和面试表达。这是最关键的准备期。', nodes: [{id:'j1',title:'简历诊所',icon:'📄',desc:'AI 五维度诊断：匹配度、量化度、清晰度、可信度、追问风险。'},{id:'j2',title:'模拟面试间',icon:'🎤',desc:'鹅学长扮演面试官，5 轮追问 + 复盘报告。'},{id:'j3',title:'部门文化盲盒',icon:'🎁',desc:'随机解锁 WXG、IEG、CSIG...不同 BG 的氛围差异。'}] },
+      senior: { title: '冲刺岛', subtitle: '大四 · 校招决胜时刻', gradient: 'from-red-400 via-rose-400 to-pink-300', shadow: 'shadow-red-200', desc: '完成岗位匹配、投递节奏管理、面试复盘和心态支持。稳住，我们能赢。', nodes: [{id:'sr1',title:'校招时间轴',icon:'📅',desc:'8 月网申 → 9 月笔试 → 10-11 月面试 → 11-12 月 Offer。'},{id:'sr2',title:'笔试通关',icon:'✏️',desc:'行测 + 专业题。提前刷题，专业知识靠平时积累。'},{id:'sr3',title:'Offer 选择',icon:'🎯',desc:'看业务前景、团队氛围、成长空间。钱是最后考虑的。'}] }
     };
 
     function renderMap() {
       const container = document.getElementById('map-content');
       let html = ''; let delay = 0;
       for (let [key, grade] of Object.entries(gradeData)) {
-        html += `
-          <div class="island-card rounded-3xl overflow-hidden bg-white shadow-sm ${grade.shadow}" style="animation-delay:${delay}s">
-            <div class="bg-gradient-to-r ${grade.gradient} p-5 text-white relative overflow-hidden">
-              <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-10 -mt-10"></div>
-              <div class="absolute bottom-0 left-0 w-20 h-20 bg-white/10 rounded-full -ml-5 -mb-5"></div>
-              <h3 class="font-bold text-lg relative z-10">${grade.title}</h3>
-              <p class="text-sm opacity-90 relative z-10">${grade.subtitle}</p>
-            </div>
-            <div class="p-4">
-              <p class="text-xs text-gray-500 mb-3 leading-relaxed">${grade.desc}</p>
-              <div class="space-y-2.5">
-        `;
+        html += `<div class="island-card rounded-3xl overflow-hidden bg-white shadow-sm ${grade.shadow}"><div class="bg-gradient-to-r ${grade.gradient} p-5 text-white relative overflow-hidden"><div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-10 -mt-10"></div><div class="absolute bottom-0 left-0 w-20 h-20 bg-white/10 rounded-full -ml-5 -mb-5"></div><h3 class="font-bold text-lg relative z-10">${grade.title}</h3><p class="text-sm opacity-90 relative z-10">${grade.subtitle}</p></div><div class="p-4"><p class="text-xs text-gray-500 mb-3 leading-relaxed">${grade.desc}</p><div class="space-y-2.5">`;
         grade.nodes.forEach(node => {
           const explored = exploredNodes.includes(node.id);
-          html += `
-            <div onclick="exploreNode('${node.id}', '${node.title}', '${key}')" 
-              class="node-item flex items-center gap-3 p-3.5 rounded-xl border-2 cursor-pointer ${explored ? 'border-green-400 bg-green-50/50' : 'border-gray-100 hover:border-gray-200 bg-white'}">
-              <div class="w-10 h-10 rounded-xl ${explored ? 'bg-green-100' : 'bg-gray-100'} flex items-center justify-center text-xl flex-shrink-0">${node.icon}</div>
-              <div class="flex-1 min-w-0">
-                <h4 class="font-medium text-sm text-gray-800">${node.title}</h4>
-                <p class="text-xs text-gray-500 mt-0.5">${node.desc}</p>
-              </div>
-              <div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${explored ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-400'}">${explored ? '✓' : '→'}</div>
-            </div>
-          `;
+          html += `<div onclick="exploreNode('${node.id}', '${node.title}', '${key}')" class="node-item flex items-center gap-3 p-3.5 rounded-xl border-2 cursor-pointer ${explored ? 'border-green-400 bg-green-50/50' : 'border-gray-100 hover:border-gray-200 bg-white'}"><div class="w-10 h-10 rounded-xl ${explored ? 'bg-green-100' : 'bg-gray-100'} flex items-center justify-center text-xl flex-shrink-0">${node.icon}</div><div class="flex-1 min-w-0"><h4 class="font-medium text-sm text-gray-800">${node.title}</h4><p class="text-xs text-gray-500 mt-0.5">${node.desc}</p></div><div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${explored ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-400'}">${explored ? '✓' : '→'}</div></div>`;
         });
         html += '</div></div></div>';
         delay += 0.1;
@@ -658,24 +514,19 @@
       const direction = document.getElementById('d-direction').value;
       const experience = document.getElementById('d-exp').value || '已有经历';
       const problem = document.getElementById('d-problem').value || '职业方向不清晰';
-
       let stage = '', focus = '', action = '';
       if (grade === '大一') { stage = '行业认知期'; focus = '先建立对互联网行业、腾讯业务和岗位类型的基础认知，不急着投递。'; action = '本周了解 3 个腾讯业务，整理 1 份岗位认知笔记。'; }
       else if (grade === '大二') { stage = '方向探索期'; focus = '把专业、兴趣和岗位方向连接起来，开始积累项目和表达材料。'; action = '本周拆解 1 个产品或技术项目，写成 STAR 案例。'; }
       else if (grade === '大三') { stage = '实习准备期'; focus = '聚焦目标岗位，补齐简历、项目复盘和面试表达。'; action = '本周完成 1 版简历优化，并进行 1 次模拟面试。'; }
       else { stage = '求职冲刺期'; focus = '围绕目标岗位做简历精修、面试训练和投递节奏管理。'; action = '本周完成岗位匹配表、简历定稿和 2 次模拟面试。'; }
-
       const recommend = direction === '暂不清楚' ? '建议先探索技术、产品、运营三个基础方向，再根据专业和经历收敛。' : `建议优先探索「${direction}」方向，并结合「${major}」背景寻找匹配岗位。`;
       const summary = `你目前处于「${stage}」。结合你的专业「${major}」、经历「${experience}」和困惑「${problem}」，鹅学长建议你先完成阶段性能力补齐，再进入下一步求职准备。`;
-
       document.getElementById('card-summary').innerText = summary;
       document.getElementById('card-recommend').innerText = recommend;
       document.getElementById('card-focus').innerText = focus;
       document.getElementById('card-action').innerText = action;
-
       document.getElementById('card-result').classList.remove('hidden');
       document.getElementById('card-result').scrollIntoView({ behavior: 'smooth' });
-
       savedCard = { grade, major, direction, recommend, focus, action, summary };
       localStorage.setItem('fg_card', JSON.stringify(savedCard));
       diagnosisDone = true; localStorage.setItem('fg_diagnosis', 'true');
@@ -709,7 +560,6 @@
 注意：不要编造经历，只能基于我已有内容优化表达。
 这是我的简历：
 【请在这里粘贴简历】`,
-
       interview: `请你扮演腾讯校园招聘面试官，对我进行一场模拟面试。
 目标岗位：【请填写岗位方向，例如产品、运营、技术、设计】
 规则：
@@ -717,7 +567,6 @@
 2. 总共进行 5 轮追问。
 3. 每轮根据我的回答继续追问。
 4. 面试结束后，请从逻辑表达、岗位理解、项目深度、沟通表达、改进建议五个维度复盘。`,
-
       star: `请你帮我将下面的经历改写成符合 STAR 法则的面试表达版本。
 要求：
 1. Situation（情境）：用 1 句话交代背景
@@ -747,48 +596,19 @@
       document.getElementById('explore-count').textContent = count;
       document.getElementById('explore-percent').textContent = percent + '%';
       document.getElementById('progress-bar').style.width = percent + '%';
-
       const trunkHeight = 120 + (percent * 2.5);
-      let svg = `<svg width="100%" height="100%" viewBox="0 0 300 400" class="drop-shadow-lg">
-        <defs><linearGradient id="trunkGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#8B5CF6"/><stop offset="100%" style="stop-color:#A78BFA"/></linearGradient></defs>
-        <ellipse cx="150" cy="380" rx="100" ry="15" fill="#E5E7EB" opacity="0.5"/>
-        <path d="M150 380 Q145 ${380-trunkHeight*0.3} 150 ${380-trunkHeight*0.6} Q155 ${380-trunkHeight*0.8} 150 ${380-trunkHeight}" stroke="url(#trunkGrad)" stroke-width="10" fill="none" stroke-linecap="round"/>
-        <path d="M150 ${380-trunkHeight*0.5} Q110 ${380-trunkHeight*0.7} 80 ${380-trunkHeight*0.8}" stroke="#A78BFA" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.8"/>
-        <path d="M150 ${380-trunkHeight*0.4} Q190 ${380-trunkHeight*0.6} 220 ${380-trunkHeight*0.7}" stroke="#A78BFA" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.8"/>
-        <path d="M150 ${380-trunkHeight*0.65} Q130 ${380-trunkHeight*0.8} 120 ${380-trunkHeight*0.9}" stroke="#C4B5FD" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.7"/>
-        <path d="M150 ${380-trunkHeight*0.55} Q170 ${380-trunkHeight*0.7} 180 ${380-trunkHeight*0.8}" stroke="#C4B5FD" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.7"/>
-      `;
-
-      const nodePositions = [
-        {x: 150, y: 380-trunkHeight, id: 'f1', label: '认知'},
-        {x: 80, y: 380-trunkHeight*0.8, id: 'f2', label: '岗位'},
-        {x: 220, y: 380-trunkHeight*0.7, id: 'f3', label: '文化'},
-        {x: 120, y: 380-trunkHeight*0.9, id: 's1', label: '专业'},
-        {x: 180, y: 380-trunkHeight*0.8, id: 's2', label: '日常'},
-        {x: 100, y: 380-trunkHeight*0.65, id: 's3', label: '技能'},
-        {x: 200, y: 380-trunkHeight*0.6, id: 'j1', label: '简历'},
-        {x: 130, y: 380-trunkHeight*0.75, id: 'j2', label: '面试'},
-        {x: 170, y: 380-trunkHeight*0.7, id: 'j3', label: '盲盒'},
-        {x: 110, y: 380-trunkHeight*0.55, id: 'sr1', label: '时间'},
-        {x: 190, y: 380-trunkHeight*0.5, id: 'sr2', label: '笔试'},
-        {x: 150, y: 380-trunkHeight*0.45, id: 'sr3', label: 'Offer'},
-        {x: 150, y: 380-trunkHeight*0.35, id: 'diagnosis', label: '诊断'}
-      ];
-
+      let svg = `<svg width="100%" height="100%" viewBox="0 0 300 400" class="drop-shadow-lg"><defs><linearGradient id="trunkGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#8B5CF6"/><stop offset="100%" style="stop-color:#A78BFA"/></linearGradient></defs><ellipse cx="150" cy="380" rx="100" ry="15" fill="#E5E7EB" opacity="0.5"/><path d="M150 380 Q145 ${380-trunkHeight*0.3} 150 ${380-trunkHeight*0.6} Q155 ${380-trunkHeight*0.8} 150 ${380-trunkHeight}" stroke="url(#trunkGrad)" stroke-width="10" fill="none" stroke-linecap="round"/><path d="M150 ${380-trunkHeight*0.5} Q110 ${380-trunkHeight*0.7} 80 ${380-trunkHeight*0.8}" stroke="#A78BFA" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.8"/><path d="M150 ${380-trunkHeight*0.4} Q190 ${380-trunkHeight*0.6} 220 ${380-trunkHeight*0.7}" stroke="#A78BFA" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.8"/><path d="M150 ${380-trunkHeight*0.65} Q130 ${380-trunkHeight*0.8} 120 ${380-trunkHeight*0.9}" stroke="#C4B5FD" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.7"/><path d="M150 ${380-trunkHeight*0.55} Q170 ${380-trunkHeight*0.7} 180 ${380-trunkHeight*0.8}" stroke="#C4B5FD" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.7"/>`;
+      const nodePositions = [{x:150,y:380-trunkHeight,id:'f1',label:'认知'},{x:80,y:380-trunkHeight*0.8,id:'f2',label:'岗位'},{x:220,y:380-trunkHeight*0.7,id:'f3',label:'文化'},{x:120,y:380-trunkHeight*0.9,id:'s1',label:'专业'},{x:180,y:380-trunkHeight*0.8,id:'s2',label:'日常'},{x:100,y:380-trunkHeight*0.65,id:'s3',label:'技能'},{x:200,y:380-trunkHeight*0.6,id:'j1',label:'简历'},{x:130,y:380-trunkHeight*0.75,id:'j2',label:'面试'},{x:170,y:380-trunkHeight*0.7,id:'j3',label:'盲盒'},{x:110,y:380-trunkHeight*0.55,id:'sr1',label:'时间'},{x:190,y:380-trunkHeight*0.5,id:'sr2',label:'笔试'},{x:150,y:380-trunkHeight*0.45,id:'sr3',label:'Offer'},{x:150,y:380-trunkHeight*0.35,id:'diagnosis',label:'诊断'}];
       nodePositions.forEach((pos, i) => {
         const explored = exploredNodes.includes(pos.id);
         const color = explored ? '#10B981' : '#D1D5DB';
         const r = explored ? 14 : 9;
         if (explored) {
-          svg += `<circle cx="${pos.x}" cy="${pos.y}" r="${r+6}" fill="#10B981" opacity="0.2">
-            <animate attributeName="r" values="${r+6};${r+12};${r+6}" dur="3s" repeatCount="indefinite"/>
-            <animate attributeName="opacity" values="0.2;0;0.2" dur="3s" repeatCount="indefinite"/>
-          </circle>`;
+          svg += `<circle cx="${pos.x}" cy="${pos.y}" r="${r+6}" fill="#10B981" opacity="0.2"><animate attributeName="r" values="${r+6};${r+12};${r+6}" dur="3s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.2;0;0.2" dur="3s" repeatCount="indefinite"/></circle>`;
         }
         svg += `<circle cx="${pos.x}" cy="${pos.y}" r="${r}" fill="${color}" stroke="white" stroke-width="2" class="${explored ? 'animate-leaf' : ''}" style="animation-delay:${i*0.1}s"/>`;
         if (explored) svg += `<text x="${pos.x}" y="${pos.y + 4}" text-anchor="middle" fill="white" font-size="10" font-weight="bold">${pos.label}</text>`;
       });
-
       const leafCount = Math.floor(percent / 8);
       for (let i = 0; i < leafCount; i++) {
         const lx = 60 + Math.random() * 180;
@@ -819,6 +639,3 @@
   </script>
 </body>
 </html>
-
-
-
